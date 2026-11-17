@@ -135,3 +135,7 @@ a.btn{display:inline-block;text-align:center}
 .mf .mp,.mf .mb,.mf .mm{fill:none;stroke-linecap:round;stroke-linejoin:round}.mf .mp{stroke-width:3.2}.mf .mb{stroke-width:2.2;stroke-dasharray:5 3}.mf .mm{stroke-width:1.6;opacity:.3}
 .mf .pl{font-size:12.5px;font-weight:700;fill:var(--ink);paint-order:stroke;stroke:var(--card);stroke-width:3px;stroke-linejoin:round}
 .mf .hd *{fill:none;stroke:var(--bl);stroke-width:1.2}.mf .hd circle{fill:var(--bl)}.mf .ear{fill:var(--bf);stroke:var(--bl)}
+.opt.sel{border-color:var(--pri);background:var(--pri2)}
+button.tile{border:0;font:inherit;color:var(--ink);text-align:left;cursor:pointer}button.tile:disabled{opacity:.5;cursor:default;transform:none}
+details.muted{margin:6px 0;font-size:.9rem}details.muted summary{cursor:pointer}
+#clk{font-variant-numeric:tabular-nums;font-size:1.1rem}

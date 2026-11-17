@@ -416,10 +416,10 @@ function renderLessons() {
 /* ---------- 路由 ---------- */
 const routes = {
   home: renderHome, theory: renderTheory, herbs: renderHerbs, points: renderPoints,
-  formulas: renderFormulas, learn: renderLearn, cards: renderCards, quiz: renderQuiz, body: renderBody, lessons: renderLessons
+  formulas: renderFormulas, learn: renderLearn, cards: renderCards, quiz: renderQuiz, body: renderBody, lessons: renderLessons, cale: renderCale
 };
 const NAV = [['home', '首頁', '🏠'], ['learn', '學習', '📖'], ['cards', '閃卡', '🃏'], ['quiz', '測驗', '✅'], ['body', '體質', '🧘']];
-const NAVGROUP = { lessons: 'learn', theory: 'learn', herbs: 'learn', points: 'learn', formulas: 'learn' };
+const NAVGROUP = { cale: 'quiz', lessons: 'learn', theory: 'learn', herbs: 'learn', points: 'learn', formulas: 'learn' };
 
 function route() {
   const name = (location.hash.replace('#/', '') || 'home').split('?')[0];
@@ -477,6 +477,7 @@ function renderHome() {
       ${tile('formulas', '⚗️', '經典方劑', FORMULAS.length + ' 首名方與組成')}
       ${tile('cards', '🃏', '翻牌記憶', '記住的卡片會被記錄')}
       ${tile('quiz', '✅', '隨堂測驗', '每回 10 題，自動出題')}
+      ${tile('cale', '🎓', '加州針灸執照考 CALE', '官方範例題＋依考試大綱模擬考')}
       ${tile('body', '🧘', '體質測試', '九種體質自我檢測與養生建議')}
     </div>
     ${d.constitution ? `<p class="muted">上次體質結果：<b>${d.constitution}</b></p>` : ''}
@@ -705,7 +706,7 @@ function renderQuiz() {
       app.innerHTML = `<h1>測驗結果</h1><div class="card center"><div class="big">${score} / ${qs.length}</div>
         <p>${score >= 9 ? '🏆 太棒了！' : score >= 6 ? '👍 不錯，繼續加油' : '📚 再多複習一下吧'}</p></div>
         ${wrong.length ? `<h2>答錯的題目</h2>${wrong.map(w => `<div class="card"><p><b>${w.q}</b></p><p class="ok">正解：${w.a}</p><p class="muted">${w.e}</p></div>`).join('')}` : ''}
-        <div class="row"><button class="btn" id="again">再測一次</button></div>`;
+        <div class="row"><button class="btn" id="again">再測一次</button><a class="btn ghost" href="#/cale">🎓 加州執照考練習</a></div>`;
       $('#again').onclick = () => renderQuiz(); return;
     }
     const q = qs[i];
@@ -721,6 +722,103 @@ function renderQuiz() {
       $('#nx').onclick = () => { i++; show(); };
     });
   };
+  show();
+}
+
+/* ---------- 加州針灸執照考試（CALE）練習 ---------- */
+const CALE_EXAM_N = 50, CALE_EXAM_MIN = 75; // 正式考試 200 題 5 小時（每題 1.5 分鐘），模擬考按比例縮小
+function calePickExam() {
+  // 依官方大綱權重分配題數，最後一個領域補足餘數
+  let left = CALE_EXAM_N;
+  return shuffle(CALE_DOMAINS.flatMap((D, i) => {
+    const pool = CALE.map((q, id) => ({ ...q, id })).filter(q => q.d === D.k);
+    const n = i === CALE_DOMAINS.length - 1 ? left : Math.round(CALE_EXAM_N * D.w / 100);
+    left -= n;
+    return pick(pool, Math.min(n, pool.length));
+  }));
+}
+function renderCale() {
+  const d = DB.get(), wrong = d.caleWrong || {};
+  const all = CALE.map((q, id) => ({ ...q, id }));
+  const nW = Object.keys(wrong).length;
+  app.innerHTML = `<h1>加州針灸執照考試 <small class="muted">CALE</small></h1>
+    <p class="muted">California Acupuncture Licensing Examination：正式考試 200 題單選（175 題計分、25 題試測），限時 5 小時，提供英、中、韓文版本，採標準參照計分（只告知通過與否）。</p>
+    <div class="stats">
+      <div class="stat"><b>${CALE.length}</b><span>題庫題數</span></div>
+      <div class="stat"><b>${d.caleBest != null ? d.caleBest + '%' : '—'}</b><span>模擬考最高</span></div>
+      <div class="stat"><b>${nW}</b><span>待複習錯題</span></div>
+    </div>
+    <h2>開始練習</h2>
+    <div class="grid">
+      <button class="tile" data-m="exam"><span class="ti">⏱️</span><b>全真模擬考</b><small>${CALE_EXAM_N} 題・${CALE_EXAM_MIN} 分鐘・依官方權重抽題，交卷才公布答案</small></button>
+      <button class="tile" data-m="official"><span class="ti">📜</span><b>官方範例題</b><small>${CALE.filter(q => q.official).length} 題・PSI 考生手冊 Appendix B（附英文原題）</small></button>
+      <button class="tile" data-m="wrong" ${nW ? '' : 'disabled'}><span class="ti">🔁</span><b>錯題複習</b><small>${nW ? nW + ' 題，答對即移出' : '目前沒有錯題'}</small></button>
+    </div>
+    <h2>依考試領域練習</h2>
+    <div class="grid">${CALE_DOMAINS.map(D => `<button class="tile" data-m="d${D.k}"><span class="ti">${'①②③④'[D.k - 1]}</span><b>${D.t} <small class="muted">${D.w}%</small></b><small>${D.en}・${all.filter(q => q.d === D.k).length} 題<br>${D.d}</small></button>`).join('')}</div>
+    <p class="disc">ℹ️ 考試大綱與權重依加州針灸局 2021 職業分析（Occupational Analysis）；考試脈名使用 New CAM 英文名（如 String-taut、Rolling、Hesitant），穴名代號如 Sp 6、Liv 3。<b>CALE 正式考題保密不公開</b>（取得、散布考題屬違法並可能導致不予發照），本區除標示「官方範例」者外均為依大綱自編之模擬題。法規以加州針灸局（acupuncture.ca.gov）最新公告為準。</p>`;
+  app.querySelectorAll('[data-m]').forEach(b => b.onclick = () => {
+    const m = b.dataset.m;
+    if (m === 'exam') return caleRun(calePickExam(), { exam: true, title: '全真模擬考' });
+    if (m === 'official') return caleRun(all.filter(q => q.official), { title: '官方範例題' });
+    if (m === 'wrong') return caleRun(shuffle(all.filter(q => wrong[q.id])), { title: '錯題複習' });
+    const D = CALE_DOMAINS[+m.slice(1) - 1];
+    caleRun(pick(all.filter(q => q.d === D.k), 10), { title: D.t });
+  });
+}
+function caleRun(qs, { exam = false, title }) {
+  const ans = qs.map(q => ({ o: shuffle([q.a, ...q.w]), pick: null }));
+  let i = 0, timer = null, end = exam ? Date.now() + CALE_EXAM_MIN * 60000 : 0;
+  const mark = (q, ok) => DB.patch(x => { x.caleWrong = x.caleWrong || {}; if (ok) delete x.caleWrong[q.id]; else x.caleWrong[q.id] = 1; });
+  const clock = () => { const t = Math.max(0, end - Date.now()), el = $('#clk'); if (el) el.textContent = `⏱ ${Math.floor(t / 60000)}:${String(Math.floor(t / 1000) % 60).padStart(2, '0')}`; if (!t) finish(); };
+  const finish = () => {
+    clearInterval(timer); removeEventListener('hashchange', stop);
+    const res = qs.map((q, n) => ({ q, ok: ans[n].pick === q.a, picked: ans[n].pick }));
+    const right = res.filter(r => r.ok).length, pct = Math.round(right / qs.length * 100);
+    if (exam) DB.patch(x => { x.caleBest = Math.max(x.caleBest || 0, pct); x.caleExams = (x.caleExams || 0) + 1; });
+    res.forEach(r => mark(r.q, r.ok));
+    const byD = CALE_DOMAINS.map(D => { const r = res.filter(x => x.q.d === D.k); return { D, n: r.length, ok: r.filter(x => x.ok).length }; }).filter(x => x.n);
+    app.innerHTML = `<h1>${title}・結果</h1><div class="card center"><div class="big">${right} / ${qs.length}</div><p>${pct}%　${pct >= 70 ? '👍 表現不錯，持續保持' : '📚 再加強弱項領域'}</p>
+      <p class="muted">CALE 採標準參照計分，及格分數依各版本難度設定，此百分比僅供自我評估。</p></div>
+      <h2>各領域得分</h2>${byD.map(x => `<div class="meter"><span>${x.D.t}</span><div class="bar"><i style="width:${x.ok / x.n * 100}%"></i></div><b>${x.ok}/${x.n}</b></div>`).join('')}
+      ${res.some(r => !r.ok) ? `<h2>答錯的題目</h2>${res.filter(r => !r.ok).map(r => `<div class="card"><p><b>${r.q.q}</b></p>${r.picked ? `<p class="no">你的答案：${r.picked}</p>` : '<p class="no">未作答</p>'}<p class="ok">正解：${r.q.a}</p><p class="muted">${r.q.e}</p></div>`).join('')}` : ''}
+      <div class="row"><button class="btn ghost" id="back">回到 CALE 首頁</button><button class="btn" id="again">再練一次</button></div>`;
+    $('#back').onclick = renderCale;
+    $('#again').onclick = () => caleRun(exam ? calePickExam() : shuffle(qs), { exam, title });
+    window.scrollTo(0, 0);
+  };
+  const stop = () => clearInterval(timer);
+  const show = () => {
+    if (!exam && i >= qs.length) return finish();
+    const q = qs[i], a = ans[i];
+    app.innerHTML = `<p><a class="muted" href="#/cale" id="quit">← 離開${exam ? '（不計分）' : ''}</a></p>
+      <div class="row between"><h1>${title}</h1>${exam ? '<b id="clk"></b>' : ''}</div>
+      <div class="bar"><i style="width:${i / qs.length * 100}%"></i></div>
+      <p class="muted">第 ${i + 1} / ${qs.length} 題　<span class="tag">${CALE_DOMAINS[q.d - 1].t}</span>${q.official ? ' <span class="tag hot">官方範例</span>' : ''}</p>
+      <div class="card"><p class="q">${q.q}</p>${q.en ? `<details class="muted"><summary>英文原題 English</summary><p>${q.en}</p></details>` : ''}
+      <div class="opts">${a.o.map((o, n) => `<button class="opt${exam && a.pick === o ? ' sel' : ''}" data-n="${n}">${'ABCD'[n]}. ${o}</button>`).join('')}</div><div id="fb"></div></div>
+      ${exam ? `<div class="row between"><button class="btn ghost" id="pv" ${i ? '' : 'disabled'}>← 上一題</button><span class="muted">已答 ${ans.filter(x => x.pick).length}/${qs.length}</span>${i + 1 < qs.length ? '<button class="btn" id="nx">下一題 →</button>' : '<button class="btn" id="sub">交卷</button>'}</div>
+        <div class="row"><button class="btn ghost" id="sub2">提前交卷</button></div>` : ''}`;
+    if (exam) {
+      clock();
+      app.querySelectorAll('.opt').forEach(b => b.onclick = () => { a.pick = a.o[b.dataset.n]; app.querySelectorAll('.opt').forEach(x => x.classList.toggle('sel', x === b)); show(); });
+      if ($('#pv')) $('#pv').onclick = () => { i--; show(); };
+      if ($('#nx')) $('#nx').onclick = () => { i++; show(); };
+      const sub = () => { const left = ans.filter(x => !x.pick).length; if (!left || confirm(`尚有 ${left} 題未作答，確定交卷？`)) finish(); };
+      if ($('#sub')) $('#sub').onclick = sub;
+      $('#sub2').onclick = sub;
+      return;
+    }
+    app.querySelectorAll('.opt').forEach(b => b.onclick = () => {
+      const ok = a.o[b.dataset.n] === q.a; a.pick = a.o[b.dataset.n];
+      app.querySelectorAll('.opt').forEach(x => { x.disabled = true; if (a.o[x.dataset.n] === q.a) x.classList.add('ok'); });
+      if (!ok) b.classList.add('no');
+      mark(q, ok);
+      $('#fb').innerHTML = `<p class="fb ${ok ? 'ok' : 'no'}">${ok ? '✔ 答對了！' : '✘ 答錯了'}</p><p class="muted">${q.e}</p><button class="btn" id="nx">${i + 1 === qs.length ? '看結果' : '下一題'}</button>`;
+      $('#nx').onclick = () => { i++; show(); };
+    });
+  };
+  if (exam) { timer = setInterval(clock, 1000); addEventListener('hashchange', stop, { once: true }); }
   show();
 }
 
