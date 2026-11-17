@@ -125,13 +125,22 @@ function buildNav() {
   $('#nav').innerHTML = NAV.map(([k, t, i]) => `<a data-nav="${k}" href="#/${k}"><span class="ic">${i}</span><span>${t}</span></a>`).join('');
 }
 
+/* ---------- 淺色／深色模式（預設淺色） ---------- */
+const isDark = () => document.documentElement.dataset.theme === 'dark';
+function setTheme(dark) {
+  if (dark) document.documentElement.dataset.theme = 'dark'; else delete document.documentElement.dataset.theme;
+  try { localStorage.setItem('qiacademy-theme', dark ? 'dark' : 'light'); } catch {}
+  $('meta[name=theme-color]').content = dark ? '#141a11' : '#33502a';
+  const b = $('#themeBtn'); if (b) b.textContent = dark ? '☀️ 淺色' : '🌙 深色';
+}
+
 /* ---------- 首頁 ---------- */
 function renderHome() {
   const d = DB.get();
   const known = Object.keys(d.known || {}).length;
   const total = HERBS.length + POINTS.length;
   app.innerHTML = `
-    <section class="hero"><h1>氣學苑 <small>QiAcademy</small></h1>
+    <section class="hero"><button id="themeBtn" class="theme" type="button" aria-label="切換淺色／深色模式">${isDark() ? '☀️ 淺色' : '🌙 深色'}</button><h1>氣學苑 <small>QiAcademy</small></h1>
       <p>互動式中醫入門：中藥、穴位、方劑、陰陽五行，邊學邊測。</p></section>
     <div class="stats">
       <div class="stat"><b>${known}/${total}</b><span>已掌握閃卡</span></div>
@@ -421,6 +430,8 @@ function renderBody() {
 
 /* ---------- 啟動 ---------- */
 buildNav();
+if (isDark()) $('meta[name=theme-color]').content = '#141a11';
+addEventListener('click', e => { if (e.target.closest('#themeBtn')) setTheme(!isDark()); });
 addEventListener('hashchange', route);
 route();
 if ('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(() => {});

@@ -1,5 +1,7 @@
 :root{--bg:#f5f3e7;--card:#fffdf5;--ink:#202d19;--mut:#6b725d;--pri:#33502a;--pri2:#e6ead3;--line:#e3e0cb;--onp:#fef7e4;--ok:#2e8b57;--no:#c0392b;--sh:0 2px 8px rgba(0,0,0,.06)}
-@media(prefers-color-scheme:dark){:root{--bg:#141a11;--card:#1d2518;--ink:#eef0e0;--mut:#a2a98f;--pri:#a8bf72;--pri2:#2a3520;--line:#303b28;--onp:#141a11;--sh:none}}
+/* 預設淺色；深色模式由 <html data-theme="dark"> 開啟（首頁右上角切換） */
+:root{color-scheme:light}
+:root[data-theme=dark]{color-scheme:dark;--bg:#141a11;--card:#1d2518;--ink:#eef0e0;--mut:#a2a98f;--pri:#a8bf72;--pri2:#2a3520;--line:#303b28;--onp:#141a11;--sh:none}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 system-ui,-apple-system,"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;display:flex;min-height:100vh}
 h1{font-size:1.6rem;margin:.2em 0 .6em}h2{font-size:1.15rem;margin:1.6em 0 .6em}h3{margin:.2em 0 .4em}
@@ -22,7 +24,9 @@ main{flex:1;max-width:860px;margin:0 auto;padding:20px 16px 96px;min-width:0}
   #nav a.on{background:var(--pri2)}
   main{padding-bottom:40px}
 }
-.hero{background:linear-gradient(135deg,#253a1d,#6e7a35);color:#fef7e4;border-radius:18px;padding:22px 20px;margin-bottom:14px}
+.hero{background:linear-gradient(135deg,#253a1d,#6e7a35);color:#fef7e4;border-radius:18px;padding:22px 20px;margin-bottom:14px;position:relative}
+.theme{position:absolute;top:12px;right:12px;border:1px solid rgba(254,247,228,.4);background:rgba(254,247,228,.12);color:inherit;font:inherit;font-size:.85rem;padding:4px 12px;border-radius:99px;cursor:pointer}
+.theme:hover{background:rgba(254,247,228,.22)}
 .hero h1{margin:0}.hero small{font-size:.6em;opacity:.8;font-weight:400}.hero p{margin:.4em 0 0}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .stat{background:var(--card);border-radius:14px;padding:12px;text-align:center;box-shadow:var(--sh)}
@@ -79,7 +83,7 @@ th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:center}th{
 fieldset{border:0}legend{font-weight:600;padding:0}fieldset.card{margin:10px 0}
 /* 圖像 */
 :root{--bf:#efe3d0;--bl:#b9a98f}
-@media(prefers-color-scheme:dark){:root{--bf:#3a4a44;--bl:#566a62}}
+:root[data-theme=dark]{--bf:#3a4a44;--bl:#566a62}
 .bodywrap{max-width:320px;margin:6px auto}
 svg.body{width:100%;height:auto;display:block}
 .bd *{fill:var(--bf);stroke:var(--bl);stroke-width:1}
