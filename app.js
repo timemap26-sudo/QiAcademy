@@ -134,6 +134,18 @@ function setTheme(dark) {
   const b = $('#themeBtn'); if (b) b.textContent = dark ? '☀️ 淺色' : '🌙 深色';
 }
 
+/* ---------- 字體大小 ---------- */
+const FZ = [0.85, 1, 1.15, 1.3, 1.5];
+function setFz(z) {
+  document.documentElement.style.setProperty('--fz', z);
+  try { localStorage.setItem('qiacademy-fz', z); } catch {}
+  const i = FZ.indexOf(z);
+  $('#fzv').textContent = Math.round(z * 100) + '%';
+  $('[data-fz="-1"]').disabled = i <= 0;
+  $('[data-fz="1"]').disabled = i >= FZ.length - 1;
+}
+const curFz = () => { const z = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--fz')) || 1; return FZ.reduce((a, b) => Math.abs(b - z) < Math.abs(a - z) ? b : a); };
+
 /* ---------- 首頁 ---------- */
 function renderHome() {
   const d = DB.get();
@@ -431,7 +443,12 @@ function renderBody() {
 /* ---------- 啟動 ---------- */
 buildNav();
 if (isDark()) $('meta[name=theme-color]').content = '#141a11';
-addEventListener('click', e => { if (e.target.closest('#themeBtn')) setTheme(!isDark()); });
+addEventListener('click', e => {
+  if (e.target.closest('#themeBtn')) setTheme(!isDark());
+  const f = e.target.closest('[data-fz]');
+  if (f) { const i = FZ.indexOf(curFz()) + +f.dataset.fz; if (FZ[i]) setFz(FZ[i]); }
+});
+setFz(curFz());
 addEventListener('hashchange', route);
 route();
 if ('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(() => {});

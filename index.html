@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<script>try{if(localStorage.getItem('qiacademy-theme')==='dark')document.documentElement.dataset.theme='dark'}catch(e){}</script>
+<script>try{if(localStorage.getItem('qiacademy-theme')==='dark')document.documentElement.dataset.theme='dark';var z=parseFloat(localStorage.getItem('qiacademy-fz'));if(z)document.documentElement.style.setProperty('--fz',z)}catch(e){}</script>
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -19,6 +19,7 @@
   <nav id="nav"></nav>
   <button id="install" class="btn ghost" hidden>安裝到裝置</button></aside>
 <main id="app"></main>
+<div class="fsz" role="group" aria-label="調整字體大小"><button type="button" data-fz="-1" aria-label="字體縮小">A－</button><span id="fzv">100%</span><button type="button" data-fz="1" aria-label="字體放大">A＋</button></div>
 <script src="data.js"></script>
 <script src="app.js"></script>
 </body>
