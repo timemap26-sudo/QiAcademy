@@ -104,11 +104,20 @@ const POINT_POS = {
   GB20:{v:'b',x:118,y:64,x2:142,lx:162,ly:66,a:'s'},
   KI1:{v:'b',x:152,y:399,lx:178,ly:400,a:'s'}
 };
-/* 局部放大圖：前臂掌側（掌心向上，左為橈側／拇指側）。肘橫紋 y≈50 至腕橫紋 y=238 為 12 寸 */
+/* 局部放大圖：r 底圖、x/y 穴位（x2 雙側）、lx/ly/a 標籤、cun 距離（ref 參考線 y、rx 參考線起點、bx 尺標位置） */
 const POINT_ZOOM = {
-  LU7:{r:'arm',x:79,y:214,cun:'1.5寸'},
-  PC6:{r:'arm',x:111,y:207,cun:'2寸'},
-  LI11:{r:'arm',x:62,y:49}
+  LU7:{r:'arm',x:79,y:214,lx:22,ly:204,cun:'1.5寸',ref:238,rx:144,bx:196},
+  PC6:{r:'arm',x:111,y:207,lx:22,ly:197,cun:'2寸',ref:238,rx:144,bx:196},
+  LI11:{r:'arm',x:62,y:49,lx:22,ly:39},
+  LI4:{r:'hand',x:108,y:222,lx:46,ly:236},
+  ST36:{r:'leg',x:151,y:157,lx:50,ly:160,cun:'3寸',ref:118,rx:163,bx:214},
+  SP6:{r:'medleg',x:136,y:220,lx:58,ly:198,cun:'3寸',ref:262,rx:142,bx:204},
+  KI3:{r:'medleg',x:114,y:266,lx:58,ly:292},
+  LR3:{r:'foot',x:110,y:214,lx:50,ly:206},
+  KI1:{r:'sole',x:140,y:172,lx:60,ly:160},
+  GV20:{r:'head',x:135,y:175,lx:206,ly:120,a:'start'},
+  GB20:{r:'neck',x:109,x2:161,y:190,lx:204,ly:214,a:'start'},
+  CV4:{r:'abdomen',x:135,y:211,lx:48,ly:205,cun:'3寸',ref:120,rx:141,bx:232}
 };
 const HERB_EMOJI = { renshen:'🥕',huangqi:'🌿',danggui:'🌱',gouqi:'🔴',gancao:'🌾',mahuang:'🌿',guizhi:'🪵',bohe:'🍃',juhua:'🌼',jinyinhua:'🌼',huanglian:'🌿',dahuang:'🟤',fuling:'🍄',baizhu:'🥔',chuanxiong:'🌱',chenpi:'🍊',shengjiang:'🫚',dazao:'🍒' };
 const FLAVOR_COL = { '酸':'#3f9b5b','苦':'#d9534f','甘':'#c9a227','辛':'#8a94a6','鹹':'#2f6fb0','淡':'#a9b3ae' };

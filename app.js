@@ -34,23 +34,54 @@ function bodySvg(view, { active = null, only = null, labels = true } = {}) {
   }).join('');
   return `<svg viewBox="0 0 260 420" class="body" role="img" aria-label="人體${view === 'f' ? '正面' : '背面'}穴位圖">${body}${line}${pts}</svg>`;
 }
+/* 局部放大圖底圖：[viewBox, 部位說明, SVG] */
+const zl = (x, y, t, a = 'end') => `<text x="${x}" y="${y}" text-anchor="${a}" class="zl">${t}</text>`;
+const zk = (x1, y1, x2, y2) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" class="zk"/>`;
+const toes = t => t.map(([x, y, rx, ry]) => `<ellipse class="zs" cx="${x}" cy="${y}" rx="${rx}" ry="${ry}"/>`).join('');
+const ZOOM_BASE = {
+  arm: ['-30 0 270 330', '前臂掌側', `<path class="zs" d="M58 0C56 60 62 120 70 170C74 200 77 212 74 222C72 230 76 234 78 240C64 254 48 270 40 292C37 302 49 307 56 299C64 288 76 281 88 282L92 330L150 330L148 280C146 262 144 248 144 238C146 200 156 140 166 80C169 50 170 20 170 0Z"/>
+    <path class="zf" d="M60 48Q114 58 168 48M78 238Q111 245 144 238"/><path class="zt" d="M104 120Q103 190 105 236M118 120Q119 190 117 236"/>
+    ${zl(-26, 14, '橈側', 'start')}${zl(236, 14, '尺側')}${zl(236, 40, '肘橫紋')}${zl(118, 258, '腕橫紋', 'middle')}${zk(72, 227, 22, 244)}${zl(20, 248, '橈骨莖突')}`],
+  hand: ['0 0 270 330', '手背', `<rect class="zs" x="100" y="30" width="28" height="120" rx="14"/><rect class="zs" x="131" y="10" width="28" height="140" rx="14"/><rect class="zs" x="162" y="24" width="26" height="126" rx="13"/><rect class="zs" x="191" y="58" width="22" height="92" rx="11"/>
+    <path class="zs" d="M106 330C98 300 88 270 76 246C62 226 46 204 36 184C30 170 32 156 42 150C52 146 60 154 66 164C76 180 88 192 100 198C100 170 100 150 102 130L214 136C214 200 206 270 196 330Z"/>
+    <path class="zt" d="M108 300L58 176M124 300L116 140"/>
+    ${zl(8, 14, '手背（右手）', 'start')}${zk(74, 116, 96, 194)}${zl(70, 110, '虎口', 'middle')}${zk(66, 300, 92, 264)}${zl(64, 306, '第1掌骨')}${zl(132, 292, '第2掌骨', 'start')}`],
+  leg: ['0 0 270 330', '小腿前外側', `<path class="zs" d="M78 0C80 40 84 80 86 120C88 160 96 220 108 330L162 330C170 260 182 180 186 120C188 80 190 40 192 0Z"/>
+    <ellipse class="zf" cx="136" cy="82" rx="22" ry="26"/><circle class="zf" cx="114" cy="118" r="5"/><circle class="zf" cx="158" cy="118" r="5"/><path class="zt" d="M136 126C134 200 130 260 128 322"/>
+    ${zl(8, 14, '內側', 'start')}${zl(262, 14, '外側')}${zk(72, 78, 114, 82)}${zl(70, 82, '髕骨')}${zk(178, 104, 161, 115)}${zl(176, 100, '犢鼻', 'start')}${zk(94, 272, 129, 262)}${zl(92, 276, '脛骨前嵴')}`],
+  medleg: ['0 0 270 330', '小腿內側', `<path class="zs" d="M92 0C80 50 78 100 88 150C94 190 96 220 96 250C90 270 76 290 74 306C74 318 84 322 96 322L250 322C262 322 266 310 258 302C236 290 200 276 180 262C172 252 168 236 166 220C164 160 168 80 172 0Z"/>
+    <ellipse class="zf" cx="130" cy="262" rx="12" ry="10"/><path class="zt" d="M106 160L100 258M154 40L144 236"/>
+    ${zl(8, 14, '後', 'start')}${zl(262, 14, '前')}${zk(184, 106, 151, 110)}${zl(186, 110, '脛骨內側緣', 'start')}${zk(84, 236, 101, 232)}${zl(82, 240, '跟腱')}${zk(146, 296, 132, 273)}${zl(150, 308, '內踝尖', 'middle')}`],
+  foot: ['0 0 270 330', '足背', toes([[88, 70, 22, 30], [124, 62, 14, 22], [152, 70, 13, 20], [176, 82, 12, 18], [196, 98, 11, 15]]) + `
+    <path class="zs" d="M100 330C96 280 80 220 70 160C66 130 70 100 80 92L200 108C210 130 208 180 196 230C186 270 176 300 172 330Z"/>
+    <path class="zt" d="M102 256L92 104M120 250L124 96"/>
+    ${zl(8, 14, '足背（右足）', 'start')}${zl(88, 30, '拇趾', 'middle')}${zk(62, 136, 93, 140)}${zl(60, 140, '第1蹠骨')}${zk(146, 166, 124, 160)}${zl(148, 170, '第2蹠骨', 'start')}`],
+  sole: ['0 0 270 330', '足底', toes([[98, 64, 20, 26], [132, 58, 13, 19], [158, 64, 12, 17], [180, 76, 11, 15], [200, 92, 10, 13]]) + `
+    <path class="zs" d="M130 326C96 326 88 300 90 270C92 240 100 220 98 190C96 160 80 140 78 118C76 100 90 90 110 92L196 104C212 108 214 124 206 146C196 176 180 200 172 240C166 280 170 326 130 326Z"/>
+    <path class="zt" d="M145 96L130 324"/>
+    <g class="zd"><line x1="234" y1="96" x2="234" y2="324"/><line x1="229" y1="96" x2="239" y2="96"/><line x1="229" y1="172" x2="239" y2="172"/><line x1="229" y1="324" x2="239" y2="324"/>${zk(150, 172, 234, 172)}<text x="241" y="138" class="zc">1/3</text><text x="241" y="252" class="zc">2/3</text></g>
+    ${zl(8, 14, '足底（趾除外）', 'start')}${zk(145, 22, 145, 92)}${zl(145, 18, '第2、3趾縫', 'middle')}${zl(130, 300, '足跟', 'middle')}`],
+  head: ['0 0 270 330', '頭頂俯視', `<ellipse class="zs" cx="42" cy="175" rx="8" ry="22"/><ellipse class="zs" cx="228" cy="175" rx="8" ry="22"/>
+    <ellipse class="zs" cx="135" cy="170" rx="92" ry="112"/><path class="zs" d="M124 62Q135 38 146 62"/>
+    <path class="zt" d="M135 58V282M36 175H234"/>
+    ${zl(8, 14, '頭頂俯視', 'start')}${zl(135, 32, '前（面部）', 'middle')}${zl(135, 302, '後（枕部）', 'middle')}${zk(38, 134, 42, 152)}${zl(48, 128, '耳尖')}${zl(180, 196, '兩耳尖連線', 'middle')}${zl(142, 250, '前正中線', 'start')}`],
+  neck: ['0 0 270 330', '後頸部', `<path class="zs" d="M88 186C92 230 86 260 52 288L14 306L14 330L256 330L256 306L218 288C184 260 178 230 182 186Z"/>
+    <ellipse class="zs" cx="52" cy="120" rx="10" ry="24"/><ellipse class="zs" cx="218" cy="120" rx="10" ry="24"/><ellipse class="zs" cx="135" cy="110" rx="80" ry="95"/>
+    <path class="zf" d="M78 168Q135 196 192 168"/><path class="zt" d="M96 182L100 244M174 182L170 244M122 196C120 240 112 270 82 300M148 196C150 240 158 270 188 300"/>
+    ${zl(8, 14, '後面觀', 'start')}${zk(58, 146, 86, 172)}${zl(56, 150, '枕骨下緣')}${zl(135, 250, '斜方肌', 'middle')}${zk(62, 246, 98, 236)}${zl(60, 250, '胸鎖乳突肌')}`],
+  abdomen: ['0 0 270 330', '下腹部', `<path class="zs" d="M60 0C58 80 52 160 64 230C72 270 96 300 110 330L160 330C174 300 198 270 206 230C218 160 212 80 210 0Z"/>
+    <ellipse class="zf" cx="135" cy="120" rx="5" ry="7"/><path class="zf" d="M108 272Q135 282 162 272M70 230Q90 262 112 290M200 230Q180 262 158 290"/><path class="zt" d="M135 0V320"/>
+    ${zl(8, 14, '前面觀', 'start')}${zl(142, 30, '前正中線', 'start')}${zl(148, 108, '臍（神闕）', 'start')}${zl(135, 300, '恥骨聯合上緣', 'middle')}`]
+};
 function zoomSvg(id) {
-  const z = POINT_ZOOM[id], pt = POINTS.find(x => x.id === id), c = MER_COLOR[pt.mer];
-  const lbl = (x, y, t, a = 'end') => `<text x="${x}" y="${y}" text-anchor="${a}" class="zl">${t}</text>`;
-  const lead = (x1, y1, x2, y2) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" class="zk"/>`;
-  const skin = `M58 0C56 60 62 120 70 170C74 200 77 212 74 222C72 230 76 234 78 240C64 254 48 270 40 292C37 302 49 307 56 299C64 288 76 281 88 282L92 330L150 330L148 280C146 262 144 248 144 238C146 200 156 140 166 80C169 50 170 20 170 0Z`;
-  const dim = z.cun ? `<g class="zd">${lead(z.x + 8, z.y, 196, z.y)}<line x1="196" y1="${z.y}" x2="196" y2="238"/><line x1="191" y1="${z.y}" x2="201" y2="${z.y}"/><line x1="191" y1="238" x2="201" y2="238"/>
-      <text x="${z.cun.length > 2 ? 203 : 203}" y="${(z.y + 238) / 2 + 4}" class="zc">${z.cun}</text></g>` : '';
-  return `<svg viewBox="-30 0 270 330" class="body zoom" role="img" aria-label="${pt.name}局部定位圖：前臂掌側">
-    <path class="zs" d="${skin}"/>
-    <path class="zf" d="M60 48Q114 58 168 48M78 238Q111 245 144 238"/>
-    <path class="zt" d="M104 120Q103 190 105 236M118 120Q119 190 117 236"/>
-    ${lbl(-26, 14, '橈側', 'start')}${lbl(236, 14, '尺側')}
-    ${lbl(236, 40, '肘橫紋')}${lbl(118, 258, '腕橫紋', 'middle')}
-    ${lead(72, 227, 22, 244)}${lbl(20, 248, '橈骨莖突')}
-    ${dim}
-    <g class="pt act">${lead(z.x - 7, z.y, 26, z.y - 14)}<text x="22" y="${z.y - 10}" text-anchor="end" class="pl">${pt.name}</text><circle cx="${z.x}" cy="${z.y}" r="7" fill="${c}"/></g>
-  </svg>`;
+  const z = POINT_ZOOM[id], pt = POINTS.find(x => x.id === id), c = MER_COLOR[pt.mer], [vb, aria, base] = ZOOM_BASE[z.r];
+  const a = z.a || 'end', xs = z.x2 ? [z.x, z.x2] : [z.x], near = a === 'start' ? Math.max(...xs) : Math.min(...xs);
+  const dim = z.cun ? `<g class="zd">${zk(z.x, z.y, z.bx, z.y)}${zk(z.rx, z.ref, z.bx, z.ref)}<line x1="${z.bx}" y1="${z.y}" x2="${z.bx}" y2="${z.ref}"/>
+      <line x1="${z.bx - 5}" y1="${z.y}" x2="${z.bx + 5}" y2="${z.y}"/><line x1="${z.bx - 5}" y1="${z.ref}" x2="${z.bx + 5}" y2="${z.ref}"/>
+      <text x="${z.bx + 7}" y="${(z.y + z.ref) / 2 + 4}" class="zc">${z.cun}</text></g>` : '';
+  return `<svg viewBox="${vb}" class="body zoom" role="img" aria-label="${pt.name}局部定位圖：${aria}">${base}${dim}
+    <g class="pt act">${zk(near, z.y, z.lx + (a === 'start' ? -4 : 4), z.ly - 4)}<text x="${z.lx}" y="${z.ly}" text-anchor="${a}" class="pl">${pt.name}</text>
+    ${xs.map(x => `<circle cx="${x}" cy="${z.y}" r="7" fill="${c}"/>`).join('')}</g></svg>`;
 }
 function gauge(n) {
   const k = n.replace('微', ''), L = ['寒', '涼', '平', '溫', '熱'], cols = ['#3b86c6', '#7fb7dd', '#aab5b0', '#e9a86b', '#d9533f'];
