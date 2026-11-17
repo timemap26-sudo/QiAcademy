@@ -123,7 +123,7 @@ svg.body{width:100%;height:auto;display:block}
 @media(min-width:900px){.fsz{bottom:20px;right:20px}}
 /* 圖解課程 */
 svg.fig{width:100%;max-width:420px;height:auto;display:block;margin:0 auto}
-.fig text{fill:var(--ink);font-family:var(--font);font-size:13px}.fig .b{font-size:20px;font-weight:700}.fig .s{font-size:14px}.fig .xs{font-size:11px}
+.fig text{fill:var(--ink);font-family:var(--font);font-size:13px}.fig .b{font-size:20px;font-weight:700}.fig .s{font-size:15px}.fig .xs{font-size:13px}
 .figbox{margin:10px 0 14px}.figbox figcaption{text-align:center;margin-top:6px;font-size:.82rem}
 .lessons{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
 .lesson{background:var(--card);border-radius:16px;padding:12px;box-shadow:var(--sh);display:flex;flex-direction:column;gap:8px;transition:transform .15s}
