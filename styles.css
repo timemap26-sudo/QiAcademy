@@ -132,3 +132,7 @@ svg.fig{width:100%;max-width:420px;height:auto;display:block;margin:0 auto}
 .pts{padding-left:1.2em}.pts li{margin:.3em 0}
 a.btn{display:inline-block;text-align:center}
 .unit{margin-bottom:8px}.unit h2 small{font-size:.75em;font-weight:400}.unit>p{margin-top:-4px}
+.opt.sel{border-color:var(--pri);background:var(--pri2)}
+button.tile{border:0;font:inherit;color:var(--ink);text-align:left;cursor:pointer}button.tile:disabled{opacity:.5;cursor:default;transform:none}
+details.muted{margin:6px 0;font-size:.9rem}details.muted summary{cursor:pointer}
+#clk{font-variant-numeric:tabular-nums;font-size:1.1rem}
