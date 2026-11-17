@@ -142,15 +142,15 @@ const FIG = {
       ${P.map(([a, b, w], i) => { const x = 8 + i * 61; return `${box(x, 54, 52, 44, WX_COL[w], a)}<line x1="${x + 26}" y1="98" x2="${x + 26}" y2="130" stroke="${WX_COL[w]}" stroke-width="3" stroke-dasharray="4 3"/><text x="${x + 26}" y="119" text-anchor="middle" class="xs" style="fill:var(--mut)">${w}</text>${box(x, 130, 52, 44, WX_COL[w], b, '', '#fff')}`; }).join('')}
       <text x="186" y="20" text-anchor="middle" class="s" style="fill:var(--mut)">虛線＝經脈相互絡屬（表裡關係）</text>`, '五臟六腑表裡關係圖');
   },
-  qixue: () => svgWrap('0 0 340 250', `<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" fill="var(--mut)"/></marker></defs>
+  qixue: () => svgWrap('-34 0 408 250', `<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" fill="var(--mut)"/></marker></defs>
     <line x1="146" y1="78" x2="84" y2="168" stroke="var(--mut)" stroke-width="2" marker-end="url(#ah)"/><line x1="70" y1="160" x2="132" y2="72" stroke="var(--mut)" stroke-width="2" marker-end="url(#ah)"/>
     <line x1="194" y1="78" x2="256" y2="168" stroke="var(--mut)" stroke-width="2"/><line x1="110" y1="200" x2="230" y2="200" stroke="var(--mut)" stroke-width="2" stroke-dasharray="5 4"/>
     <circle cx="170" cy="52" r="38" fill="#d98a1f"/><text x="170" y="60" text-anchor="middle" class="b" style="fill:#fff">氣</text>
     <circle cx="70" cy="200" r="38" fill="#c0392b"/><text x="70" y="208" text-anchor="middle" class="b" style="fill:#fff">血</text>
     <circle cx="270" cy="200" r="38" fill="#2f6fb0"/><text x="270" y="208" text-anchor="middle" class="b" style="fill:#fff">津液</text>
-    <text x="54" y="104" text-anchor="middle" class="s">氣為血之帥</text><text x="54" y="122" text-anchor="middle" class="xs" style="fill:var(--mut)">生血・行血・攝血</text>
-    <text x="150" y="134" text-anchor="middle" class="s">血為氣之母</text><text x="150" y="150" text-anchor="middle" class="xs" style="fill:var(--mut)">養氣・載氣</text>
-    <text x="286" y="110" text-anchor="middle" class="s">氣能生津</text><text x="286" y="128" text-anchor="middle" class="xs" style="fill:var(--mut)">行津・攝津・津能載氣</text>
+    <text x="38" y="102" text-anchor="middle" class="s">氣為血之帥</text><text x="38" y="120" text-anchor="middle" class="xs" style="fill:var(--mut)">生血・行血・攝血</text>
+    <text x="166" y="136" text-anchor="middle" class="s">血為氣之母</text><text x="166" y="153" text-anchor="middle" class="xs" style="fill:var(--mut)">養氣・載氣</text>
+    <text x="304" y="108" text-anchor="middle" class="s">氣能生津</text><text x="304" y="126" text-anchor="middle" class="xs" style="fill:var(--mut)">行津・攝津・津能載氣</text>
     <text x="170" y="192" text-anchor="middle" class="s">津血同源</text>`, '氣血津液關係圖'),
   liuyin: () => {
     const L = [['🌬️', '風', '善行數變', '#3f9b5b'], ['❄️', '寒', '凝滯收引', '#2f6fb0'], ['☀️', '暑', '炎熱升散', '#d98a1f'], ['💧', '濕', '重濁黏滯', '#8a7a4a'], ['🍂', '燥', '乾澀傷肺', '#a87a3a'], ['🔥', '火', '炎上動血', '#c0392b']];
@@ -158,7 +158,7 @@ const FIG = {
       <text x="${x + 56}" y="${y + 38}" text-anchor="middle" style="font-size:28px">${e}</text><text x="${x + 56}" y="${y + 70}" text-anchor="middle" class="b" style="fill:${c}">${n}邪</text><text x="${x + 56}" y="${y + 94}" text-anchor="middle" class="xs">${d}</text>`; }).join(''), '六淫外邪圖');
   },
   sizhen: () => {
-    const Q = [['👁️', '望', '神・色・形・態・舌', '#3f9b5b'], ['👂', '聞', '聽聲音・嗅氣味', '#2f6fb0'], ['💬', '問', '十問歌', '#d98a1f'], ['✋', '切', '脈診・按診', '#c0392b']];
+    const Q = [['👁️', '望', '神色・形態・舌象', '#3f9b5b'], ['👂', '聞', '聽聲音・嗅氣味', '#2f6fb0'], ['💬', '問', '十問歌', '#d98a1f'], ['✋', '切', '脈診・按診', '#c0392b']];
     return svgWrap('0 0 340 260', `${Q.map(([e, n, d, c], i) => { const x = 6 + (i % 2) * 168, y = 6 + (i / 2 | 0) * 128; return `<rect x="${x}" y="${y}" width="160" height="120" rx="16" fill="${c}" opacity=".14"/>
       <text x="${x + 80}" y="${y + 42}" text-anchor="middle" style="font-size:28px">${e}</text><text x="${x + 80}" y="${y + 76}" text-anchor="middle" class="b" style="fill:${c}">${n}診</text><text x="${x + 80}" y="${y + 100}" text-anchor="middle" class="xs">${d}</text>`; }).join('')}
       <circle cx="170" cy="130" r="34" fill="var(--pri)"/><text x="170" y="126" text-anchor="middle" class="s" style="fill:var(--onp)">四診</text><text x="170" y="146" text-anchor="middle" class="s" style="fill:var(--onp)">合參</text>`, '四診合參圖');
@@ -276,8 +276,8 @@ const FIG = {
     const B = [['黃帝內經', '戰國–西漢', '理論奠基', '#3f9b5b'], ['神農本草經', '東漢', '本草之祖', '#c9a227'], ['傷寒雜病論', '東漢末・張仲景', '方書之祖', '#c0392b'], ['溫病條辨', '清・吳鞠通', '溫病集成', '#2f6fb0']];
     return svgWrap('0 0 360 240', `<defs><marker id="jdA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" fill="var(--mut)"/></marker></defs>
       <line x1="6" y1="120" x2="352" y2="120" stroke="var(--mut)" stroke-width="3" marker-end="url(#jdA)"/>`
-      + B.map(([n, t, d, c], i) => { const x = 52 + i * 86, up = i % 2 === 0, y = up ? 14 : 140; return `<line x1="${x}" y1="${up ? 99 : 120}" x2="${x}" y2="${up ? 120 : 140}" stroke="${c}" stroke-width="2"/><circle cx="${x}" cy="120" r="7" fill="${c}"/>
-        <rect x="${x - 47}" y="${y}" width="94" height="85" rx="10" fill="${c}" opacity=".15"/><rect x="${x - 47}" y="${y}" width="94" height="85" rx="10" fill="none" stroke="${c}" stroke-width="1.5"/>
+      + B.map(([n, t, d, c], i) => { const x = 56 + i * 84, up = i % 2 === 0, y = up ? 14 : 140; return `<line x1="${x}" y1="${up ? 99 : 120}" x2="${x}" y2="${up ? 120 : 140}" stroke="${c}" stroke-width="2"/><circle cx="${x}" cy="120" r="7" fill="${c}"/>
+        <rect x="${x - 52}" y="${y}" width="104" height="85" rx="10" fill="${c}" opacity=".15"/><rect x="${x - 52}" y="${y}" width="104" height="85" rx="10" fill="none" stroke="${c}" stroke-width="1.5"/>
         <text x="${x}" y="${y + 24}" text-anchor="middle" style="font-size:18px">📜</text><text x="${x}" y="${y + 46}" text-anchor="middle" class="s" style="font-weight:700">${n}</text><text x="${x}" y="${y + 62}" text-anchor="middle" class="xs">${t}</text><text x="${x}" y="${y + 77}" text-anchor="middle" class="xs" style="fill:${c};font-weight:700">${d}</text>`; }).join(''), '中醫經典年代圖');
   },
   liujing: () => {
