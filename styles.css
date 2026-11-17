@@ -36,7 +36,7 @@ main{flex:1;max-width:860px;margin:0 auto;padding:20px 16px 96px;min-width:0}
 .stat b{display:block;font-size:1.4rem;color:var(--pri)}.stat span{font-size:.8rem;color:var(--mut)}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
 .tile{background:var(--card);border-radius:16px;padding:16px;box-shadow:var(--sh);display:flex;flex-direction:column;gap:2px;transition:transform .15s}
-.tile:active,.tile:hover{transform:translateY(-2px)}.tile .ti{font-size:1.8rem}.tile small{color:var(--mut)}
+.tile:active,.tile:hover{transform:translateY(-2px)}.tile .ti{font-size:1.8rem}.tile small{color:var(--mut);font-weight:700}
 .card{background:var(--card);border-radius:14px;padding:14px 16px;margin:10px 0;box-shadow:var(--sh)}
 .card summary{cursor:pointer;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
 .card p{margin:.5em 0}
