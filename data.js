@@ -104,6 +104,12 @@ const POINT_POS = {
   GB20:{v:'b',x:118,y:64,x2:142,lx:162,ly:66,a:'s'},
   KI1:{v:'b',x:152,y:399,lx:178,ly:400,a:'s'}
 };
+/* 局部放大圖：前臂掌側（掌心向上，左為橈側／拇指側）。肘橫紋 y≈50 至腕橫紋 y=238 為 12 寸 */
+const POINT_ZOOM = {
+  LU7:{r:'arm',x:79,y:214,cun:'1.5寸'},
+  PC6:{r:'arm',x:111,y:207,cun:'2寸'},
+  LI11:{r:'arm',x:62,y:49}
+};
 const HERB_EMOJI = { renshen:'🥕',huangqi:'🌿',danggui:'🌱',gouqi:'🔴',gancao:'🌾',mahuang:'🌿',guizhi:'🪵',bohe:'🍃',juhua:'🌼',jinyinhua:'🌼',huanglian:'🌿',dahuang:'🟤',fuling:'🍄',baizhu:'🥔',chuanxiong:'🌱',chenpi:'🍊',shengjiang:'🫚',dazao:'🍒' };
 const FLAVOR_COL = { '酸':'#3f9b5b','苦':'#d9534f','甘':'#c9a227','辛':'#8a94a6','鹹':'#2f6fb0','淡':'#a9b3ae' };
 const TONGUE = [

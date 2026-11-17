@@ -34,6 +34,24 @@ function bodySvg(view, { active = null, only = null, labels = true } = {}) {
   }).join('');
   return `<svg viewBox="0 0 260 420" class="body" role="img" aria-label="人體${view === 'f' ? '正面' : '背面'}穴位圖">${body}${line}${pts}</svg>`;
 }
+function zoomSvg(id) {
+  const z = POINT_ZOOM[id], pt = POINTS.find(x => x.id === id), c = MER_COLOR[pt.mer];
+  const lbl = (x, y, t, a = 'end') => `<text x="${x}" y="${y}" text-anchor="${a}" class="zl">${t}</text>`;
+  const lead = (x1, y1, x2, y2) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" class="zk"/>`;
+  const skin = `M58 0C56 60 62 120 70 170C74 200 77 212 74 222C72 230 76 234 78 240C64 254 48 270 40 292C37 302 49 307 56 299C64 288 76 281 88 282L92 330L150 330L148 280C146 262 144 248 144 238C146 200 156 140 166 80C169 50 170 20 170 0Z`;
+  const dim = z.cun ? `<g class="zd">${lead(z.x + 8, z.y, 196, z.y)}<line x1="196" y1="${z.y}" x2="196" y2="238"/><line x1="191" y1="${z.y}" x2="201" y2="${z.y}"/><line x1="191" y1="238" x2="201" y2="238"/>
+      <text x="${z.cun.length > 2 ? 203 : 203}" y="${(z.y + 238) / 2 + 4}" class="zc">${z.cun}</text></g>` : '';
+  return `<svg viewBox="-30 0 270 330" class="body zoom" role="img" aria-label="${pt.name}局部定位圖：前臂掌側">
+    <path class="zs" d="${skin}"/>
+    <path class="zf" d="M60 48Q114 58 168 48M78 238Q111 245 144 238"/>
+    <path class="zt" d="M104 120Q103 190 105 236M118 120Q119 190 117 236"/>
+    ${lbl(-26, 14, '橈側', 'start')}${lbl(236, 14, '尺側')}
+    ${lbl(236, 40, '肘橫紋')}${lbl(118, 258, '腕橫紋', 'middle')}
+    ${lead(72, 227, 22, 244)}${lbl(20, 248, '橈骨莖突')}
+    ${dim}
+    <g class="pt act">${lead(z.x - 7, z.y, 26, z.y - 14)}<text x="22" y="${z.y - 10}" text-anchor="end" class="pl">${pt.name}</text><circle cx="${z.x}" cy="${z.y}" r="7" fill="${c}"/></g>
+  </svg>`;
+}
 function gauge(n) {
   const k = n.replace('微', ''), L = ['寒', '涼', '平', '溫', '熱'], cols = ['#3b86c6', '#7fb7dd', '#aab5b0', '#e9a86b', '#d9533f'];
   return `<div class="gauge" title="四氣：寒涼平溫熱">${L.map((l, i) => `<span style="background:${cols[i]}" class="${l === k ? 'on' : ''}">${l === k ? n : l}</span>`).join('')}</div>`;
@@ -244,7 +262,7 @@ function renderFormulas() {
 function renderCards() {
   const all = [
     ...HERBS.map(h => ({ id: 'h_' + h.id, tag: '中藥', icon: HERB_EMOJI[h.id], front: h.name, sub: h.py, col: 1, art: gauge(h.nature) + `<div class="fls">${flavorChips(h.flavor)}</div>`, back: `歸經：${h.mer}\n功效：${h.eff}` })),
-    ...POINTS.map(p => ({ id: 'p_' + p.id, tag: '穴位', front: p.name, sub: p.code, art: POINT_POS[p.id] ? bodySvg(POINT_POS[p.id].v, { only: p.id, labels: false }) : '', back: `經絡：${p.mer}\n定位：${p.loc}\n主治：${p.use}` }))
+    ...POINTS.map(p => ({ id: 'p_' + p.id, tag: '穴位', front: p.name, sub: p.code, art: POINT_ZOOM[p.id] ? zoomSvg(p.id) : POINT_POS[p.id] ? bodySvg(POINT_POS[p.id].v, { only: p.id, labels: false }) : '', back: `經絡：${p.mer}\n定位：${p.loc}\n主治：${p.use}` }))
   ];
   let deck = shuffle(all), i = 0, flipped = false, onlyNew = false;
   const known = () => DB.get().known || {};
