@@ -1,0 +1,15 @@
+{
+  "name": "氣學苑 QiAcademy",
+  "short_name": "氣學苑",
+  "description": "互動式中醫教學 App",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f6f4ee",
+  "theme_color": "#1f6f5c",
+  "lang": "zh-Hant",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
