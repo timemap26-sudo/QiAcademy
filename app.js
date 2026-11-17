@@ -188,7 +188,116 @@ const FIG = {
     <text x="150" y="172" text-anchor="middle" class="b" style="fill:#fff">中焦</text><text x="150" y="194" text-anchor="middle" class="xs" style="fill:#fff">脾・胃</text>
     <text x="150" y="244" text-anchor="middle" class="b" style="fill:#fff">下焦</text><text x="150" y="266" text-anchor="middle" class="xs" style="fill:#fff">肝・腎・腸・膀胱</text>
     <text x="236" y="104" class="s">☁️ 如霧</text><text x="236" y="178" class="s">🫕 如漚</text><text x="236" y="252" class="s">🌊 如瀆</text>
-    <text x="4" y="142" class="xs" style="fill:var(--mut)">膈 —</text><text x="4" y="212" class="xs" style="fill:var(--mut)">臍 —</text>`, '三焦分部圖')
+    <text x="4" y="142" class="xs" style="fill:var(--mut)">膈 —</text><text x="4" y="212" class="xs" style="fill:var(--mut)">臍 —</text>`, '三焦分部圖'),
+  wuxing: () => {
+    const N = [['木', '#3f9b5b', '肝'], ['火', '#d9534f', '心'], ['土', '#c9a227', '脾'], ['金', '#8a94a6', '肺'], ['水', '#2f6fb0', '腎']];
+    const P = N.map((_, i) => { const a = -Math.PI / 2 + i * 2 * Math.PI / 5; return [150 + 108 * Math.cos(a), 150 + 104 * Math.sin(a)]; });
+    const seg = (a, b, r = 31) => { const dx = b[0] - a[0], dy = b[1] - a[1], L = Math.hypot(dx, dy), ux = dx / L, uy = dy / L; return [a[0] + ux * r, a[1] + uy * r, b[0] - ux * r, b[1] - uy * r].map(v => v.toFixed(1)); };
+    let g = '';
+    N.forEach((_, i) => {
+      const [a, b, c, d] = seg(P[i], P[(i + 1) % 5]), [e, f, h, k] = seg(P[i], P[(i + 2) % 5]);
+      g += `<line x1="${a}" y1="${b}" x2="${c}" y2="${d}" stroke="#3f9b5b" stroke-width="3" marker-end="url(#wxG)"/><line x1="${e}" y1="${f}" x2="${h}" y2="${k}" stroke="#d9534f" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#wxR)"/>`;
+    });
+    return svgWrap('0 0 300 300', `<defs><marker id="wxG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0L10,5L0,10z" fill="#3f9b5b"/></marker><marker id="wxR" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0L10,5L0,10z" fill="#d9534f"/></marker></defs>${g}
+      ${N.map(([n, c, o], i) => `<circle cx="${P[i][0].toFixed(1)}" cy="${P[i][1].toFixed(1)}" r="28" fill="${c}"/><text x="${P[i][0].toFixed(1)}" y="${(P[i][1] + 3).toFixed(1)}" text-anchor="middle" class="b" style="fill:#fff">${n}</text><text x="${P[i][0].toFixed(1)}" y="${(P[i][1] + 19).toFixed(1)}" text-anchor="middle" class="xs" style="fill:#fff">${o}</text>`).join('')}
+      <text x="150" y="294" text-anchor="middle" class="xs"><tspan style="fill:#3f9b5b">━ 相生（外圈）</tspan>　<tspan style="fill:#d9534f">╍ 相剋（內星）</tspan></text>`, '五行相生相剋圖');
+  },
+  wuzang: () => {
+    const R = [['肝', '#3f9b5b', '藏血・主疏泄', '筋・目・爪'], ['心', '#d9534f', '主血脈・藏神', '脈・舌・面'], ['脾', '#c9a227', '主運化・統血・升清', '肉・口・唇'], ['肺', '#8a94a6', '主氣・宣降・通調水道', '皮・鼻・毛'], ['腎', '#2f6fb0', '藏精・主水・納氣', '骨・耳・髮']];
+    return svgWrap('0 0 360 290', `<text x="80" y="16" class="xs" style="fill:var(--mut)">主要生理功能</text><text x="272" y="16" class="xs" style="fill:var(--mut)">體・竅・華</text>
+      ${R.map(([n, c, f, o], i) => { const y = 24 + i * 53; return `${box(4, y, 60, 46, c, n)}<rect x="70" y="${y}" width="286" height="46" rx="10" fill="${c}" opacity=".14"/><text x="80" y="${y + 28}" class="s">${f}</text><text x="272" y="${y + 28}" class="xs">${o}</text>`; }).join('')}`, '五臟功能圖');
+  },
+  qiqing: () => {
+    const L = [['😠', '怒', '傷肝・氣上', '#3f9b5b'], ['😄', '喜', '傷心・氣緩', '#d9534f'], ['🤔', '思', '傷脾・氣結', '#c9a227'], ['😢', '悲・憂', '傷肺・氣消', '#8a94a6'], ['😨', '恐', '傷腎・氣下', '#2f6fb0'], ['😱', '驚', '傷心腎・氣亂', '#6a5a9a']];
+    return svgWrap('0 0 360 236', L.map(([e, n, d, c], i) => { const x = 6 + (i % 3) * 118, y = 6 + (i / 3 | 0) * 116; return `<rect x="${x}" y="${y}" width="112" height="108" rx="14" fill="${c}" opacity=".14"/><rect x="${x}" y="${y}" width="112" height="108" rx="14" fill="none" stroke="${c}" stroke-width="2"/>
+      <text x="${x + 56}" y="${y + 38}" text-anchor="middle" style="font-size:28px">${e}</text><text x="${x + 56}" y="${y + 68}" text-anchor="middle" class="b" style="fill:${c}">${n}</text><text x="${x + 56}" y="${y + 92}" text-anchor="middle" class="xs">${d}</text>`; }).join(''), '七情內傷圖');
+  },
+  shezhen: () => {
+    const RS = [[0, 98, 120, 44, '#ffd166'], [34, 38, 52, 60, '#06d6a0'], [0, 38, 34, 60, '#118ab2'], [86, 38, 34, 60, '#118ab2'], [0, 0, 120, 38, '#ef476f']];
+    const T = (x, y, t, c = 's') => `<text x="${x}" y="${y}" text-anchor="middle" class="${c}" style="fill:#3a2420">${t}</text>`;
+    return svgWrap('0 0 340 262', `<defs><clipPath id="tcL"><path d="${TPATH}"/></clipPath></defs>
+      <g transform="translate(80,14) scale(1.5)"><path d="${TPATH}" fill="#e8868a"/><g clip-path="url(#tcL)">${RS.map(([x, y, w, h, c]) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${c}" fill-opacity=".45" stroke="#fff" stroke-width="1"/>`).join('')}</g><path d="${TPATH}" fill="none" stroke="rgba(0,0,0,.3)"/></g>
+      ${T(170, 52, '舌根', 'b')}${T(170, 67, '腎', 'xs')}${T(170, 116, '舌中', 'b')}${T(170, 136, '脾胃', 'xs')}<path d="M88,124 H122 M252,124 H218" stroke="var(--mut)" stroke-width="1.5"/><circle cx="122" cy="124" r="3" fill="var(--mut)"/><circle cx="218" cy="124" r="3" fill="var(--mut)"/><text x="58" y="118" text-anchor="middle" class="s">舌邊</text><text x="58" y="136" text-anchor="middle" class="xs">肝膽</text><text x="282" y="118" text-anchor="middle" class="s">舌邊</text><text x="282" y="136" text-anchor="middle" class="xs">肝膽</text>${T(170, 182, '舌尖')}${T(170, 198, '心肺', 'xs')}
+      <text x="170" y="254" text-anchor="middle" class="xs" style="fill:var(--mut)">舌質看臟腑虛實・舌苔看病邪深淺</text>`, '舌面臟腑分區圖');
+  },
+  maizhen: () => {
+    const C = ['#d9534f', '#c9a227', '#2f6fb0'];
+    const arm = (cx, dx, side, org) => `<ellipse cx="${cx}" cy="40" rx="42" ry="28" fill="var(--bf)" stroke="var(--bl)" stroke-width="2"/><rect x="${cx - 30}" y="56" width="60" height="176" rx="22" fill="var(--bf)" stroke="var(--bl)" stroke-width="2"/>
+      <text x="${cx}" y="46" text-anchor="middle" class="s">${side}</text>
+      ${['寸', '關', '尺'].map((p, i) => { const y = 96 + i * 44, x = cx + dx; return `<circle cx="${x}" cy="${y}" r="12" fill="${C[i]}"/><text x="${x}" y="${y + 4}" text-anchor="middle" class="xs" style="fill:#fff">${p}</text><text x="${x + (dx > 0 ? 22 : -22)}" y="${y + 5}" text-anchor="${dx > 0 ? 'start' : 'end'}" class="s">${org[i]}</text>`; }).join('')}`;
+    return svgWrap('0 0 340 262', `${arm(84, 14, '左手', ['心', '肝', '腎'])}${arm(256, -14, '右手', ['肺', '脾', '腎・命門'])}
+      <text x="170" y="254" text-anchor="middle" class="xs" style="fill:var(--mut)">掌後高骨定關・浮中沉三候</text>`, '寸口脈寸關尺分候臟腑圖');
+  },
+  siqi: () => {
+    const Q = [['寒', '#3b86c6'], ['涼', '#7fb7dd'], ['平', '#aab5b0'], ['溫', '#e9a86b'], ['熱', '#d9533f']];
+    const W = [['辛', '#8a94a6', '能散・能行'], ['甘', '#c9a227', '能補・能和・能緩'], ['酸', '#3f9b5b', '能收・能澀'], ['苦', '#d9534f', '能泄・能燥・能堅'], ['鹹', '#2f6fb0', '能下・能軟']];
+    return svgWrap('0 0 360 250', `<text x="180" y="18" text-anchor="middle" class="s">四氣：藥性寒熱</text>
+      ${Q.map(([n, c], i) => box(8 + i * 70, 28, 64, 44, c, n)).join('')}
+      <text x="8" y="92" class="xs" style="fill:var(--mut)">← 清熱瀉火</text><text x="352" y="92" text-anchor="end" class="xs" style="fill:var(--mut)">溫裡散寒 →</text>
+      <text x="180" y="126" text-anchor="middle" class="s">五味：作用特點</text>
+      ${W.map(([n, c, d], i) => { const x = 40 + i * 70; return `<rect x="${x - 32}" y="136" width="64" height="106" rx="10" fill="${c}" opacity=".15"/><circle cx="${x}" cy="166" r="21" fill="${c}"/><text x="${x}" y="173" text-anchor="middle" class="b" style="fill:#fff">${n}</text>${d.split('・').map((t, j) => `<text x="${x}" y="${204 + j * 15}" text-anchor="middle" class="xs">${t}</text>`).join('')}`; }).join('')}`, '四氣五味圖');
+  },
+  peiwu: () => {
+    const G = [['增效', '#3f9b5b', '宜用', [['相須', '麻黃＋桂枝'], ['相使', '黃耆＋茯苓']]], ['減毒', '#2f6fb0', '宜用（毒性藥）', [['相畏', '半夏畏生薑'], ['相殺', '生薑殺半夏毒']]], ['減效・增毒', '#d9534f', '慎用・禁用', [['相惡', '人參惡萊菔子'], ['相反', '甘草反甘遂']]]];
+    return svgWrap('0 0 360 262', G.map(([h, c, u, K], i) => { const x = 4 + i * 119; return `<rect x="${x}" y="4" width="113" height="40" rx="10" fill="${c}"/><text x="${x + 56}" y="30" text-anchor="middle" class="s" style="fill:#fff;font-weight:700">${h}</text><text x="${x + 56}" y="62" text-anchor="middle" class="xs" style="fill:var(--mut)">${u}</text>
+      ${K.map(([n, e], j) => { const y = 72 + j * 82; return `<rect x="${x}" y="${y}" width="113" height="74" rx="12" fill="${c}" opacity=".14"/><rect x="${x}" y="${y}" width="113" height="74" rx="12" fill="none" stroke="${c}" stroke-width="1.5"/><text x="${x + 56}" y="${y + 32}" text-anchor="middle" class="b" style="fill:${c}">${n}</text><text x="${x + 56}" y="${y + 56}" text-anchor="middle" class="xs">${e}</text>`; }).join('')}`; }).join('')
+      + `<text x="180" y="252" text-anchor="middle" class="xs" style="fill:var(--mut)">另有「單行」：單用一味藥，如獨參湯</text>`, '中藥配伍七情圖');
+  },
+  junchen: () => {
+    const L = [['君', '麻黃', '發汗解表・宣肺平喘', '#c0392b', 140], ['臣', '桂枝', '解肌發表・助君發汗', '#d98a1f', 200], ['佐', '杏仁', '降利肺氣・助麻黃平喘', '#3f9b5b', 260], ['使', '炙甘草', '調和諸藥・緩和藥性', '#2f6fb0', 320]];
+    return svgWrap('0 0 340 268', `<text x="170" y="18" text-anchor="middle" class="s">以「麻黃湯」為例</text>` + L.map(([r, h, d, c, w], i) => { const y = 28 + i * 60, x = 170 - w / 2; return `<rect x="${x}" y="${y}" width="${w}" height="54" rx="10" fill="${c}"/><text x="170" y="${y + 25}" text-anchor="middle" class="b" style="fill:#fff">${r}・${h}</text><text x="170" y="${y + 45}" text-anchor="middle" class="xs" style="fill:#fff">${d}</text>`; }).join(''), '君臣佐使組方圖');
+  },
+  bafa: () => {
+    const M = [['汗', '解表', '#5a9fd0'], ['吐', '湧吐', '#8a7a4a'], ['下', '瀉下', '#a87a3a'], ['和', '和解', '#3f9b5b'], ['溫', '溫裡', '#e08a4b'], ['清', '清熱', '#3b6fb6'], ['消', '消導', '#b8921f'], ['補', '補益', '#c0392b']];
+    return svgWrap('0 0 300 300', `<circle cx="150" cy="150" r="104" fill="none" stroke="var(--line)" stroke-width="2" stroke-dasharray="4 4"/>`
+      + M.map(([n, d, c], i) => { const a = (-90 + i * 45) * Math.PI / 180, x = (150 + 104 * Math.cos(a)).toFixed(1), y = 150 + 104 * Math.sin(a); return `<circle cx="${x}" cy="${y.toFixed(1)}" r="32" fill="${c}"/><text x="${x}" y="${(y + 3).toFixed(1)}" text-anchor="middle" class="b" style="fill:#fff">${n}</text><text x="${x}" y="${(y + 19).toFixed(1)}" text-anchor="middle" class="xs" style="fill:#fff">${d}</text>`; }).join('')
+      + `<circle cx="150" cy="150" r="44" fill="var(--pri)"/><text x="150" y="146" text-anchor="middle" class="s" style="fill:var(--onp)">治療</text><text x="150" y="166" text-anchor="middle" class="s" style="fill:var(--onp)">八法</text>`, '治療八法圖');
+  },
+  gudu: () => {
+    const sk = 'fill="var(--bf)" stroke="var(--bl)" stroke-width="2"', ln = 'stroke="var(--bl)" stroke-width="1.5"';
+    const br = (x1, x2, y, t) => `<path d="M${x1},${y + 6} V${y} H${x2} V${y + 6}" fill="none" stroke="#d9534f" stroke-width="2"/><text x="${(x1 + x2) / 2}" y="${y - 6}" text-anchor="middle" class="s" style="fill:#d9534f">${t}</text>`;
+    const vb = (x, y1, y2, t) => `<path d="M${x - 6},${y1} H${x} V${y2} H${x - 6}" fill="none" stroke="#d9534f" stroke-width="2"/><text x="${x + 5}" y="${(y1 + y2) / 2 + 5}" class="s" style="fill:#d9534f">${t}</text>`;
+    const G = [['前髮際至後髮際', '12 寸'], ['歧骨至臍中', '8 寸'], ['臍中至恥骨上緣', '5 寸'], ['肘橫紋至腕橫紋', '12 寸'], ['膝中至外踝尖', '16 寸'], ['犢鼻至足三里', '3 寸']];
+    return svgWrap('0 0 360 290', `<rect x="40" y="30" width="30" height="116" rx="14" ${sk}/><line x1="42" y1="70" x2="68" y2="70" ${ln}/><line x1="42" y1="102" x2="68" y2="102" ${ln}/>${vb(80, 70, 102, '1寸')}
+      <rect x="158" y="54" width="36" height="92" rx="16" ${sk}/><line x1="160" y1="88" x2="192" y2="88" ${ln}/>${br(158, 194, 42, '1寸')}
+      ${[0, 1, 2, 3].map(i => `<rect x="${250 + i * 24}" y="${i === 1 ? 50 : 56}" width="22" height="${i === 1 ? 96 : 90}" rx="10" ${sk}/>`).join('')}<line x1="250" y1="96" x2="344" y2="96" stroke="#d9534f" stroke-width="1.5" stroke-dasharray="3 3"/>${br(250, 344, 38, '3寸')}
+      <text x="60" y="166" text-anchor="middle" class="xs">中指同身寸</text><text x="176" y="166" text-anchor="middle" class="xs">拇指同身寸</text><text x="297" y="166" text-anchor="middle" class="xs">一夫法（四指併攏）</text>
+      <text x="180" y="192" text-anchor="middle" class="s">常用骨度分寸</text>
+      ${G.map(([a, b], i) => { const x = 4 + (i % 3) * 119, y = 202 + (i / 3 | 0) * 44; return `<rect x="${x}" y="${y}" width="113" height="38" rx="8" fill="var(--pri)" opacity=".13"/><text x="${x + 56}" y="${y + 16}" text-anchor="middle" class="xs">${a}</text><text x="${x + 56}" y="${y + 32}" text-anchor="middle" class="xs" style="font-weight:700">${b}</text>`; }).join('')}`, '取穴量度：同身寸與骨度分寸圖');
+  },
+  wushu: () => {
+    const P = [['井', '所出', '如泉源', '少商'], ['滎', '所溜', '如小流', '魚際'], ['輸', '所注', '如灌注', '太淵'], ['經', '所行', '如江河', '經渠'], ['合', '所入', '歸大海', '尺澤']];
+    return svgWrap('0 0 360 220', `<polygon points="16,102 344,78 344,130 16,106" fill="#2f6fb0" opacity=".22"/>
+      <text x="16" y="148" class="xs" style="fill:var(--mut)">指（趾）端</text><text x="344" y="148" text-anchor="end" class="xs" style="fill:var(--mut)">肘（膝）</text>
+      ${P.map(([n, a, b, e], i) => { const x = 40 + i * 70; return `<text x="${x}" y="40" text-anchor="middle" class="s">${a}</text><text x="${x}" y="58" text-anchor="middle" class="xs" style="fill:var(--mut)">${b}</text><circle cx="${x}" cy="104" r="19" fill="#2f6fb0"/><text x="${x}" y="111" text-anchor="middle" class="b" style="fill:#fff">${n}</text><text x="${x}" y="176" text-anchor="middle" class="s">${e}</text>`; }).join('')}
+      <text x="180" y="204" text-anchor="middle" class="xs" style="fill:var(--mut)">例：手太陰肺經的五輸穴</text>`, '五輸穴經氣流注圖');
+  },
+  jingdian: () => {
+    const B = [['黃帝內經', '戰國–西漢', '理論奠基', '#3f9b5b'], ['神農本草經', '東漢', '本草之祖', '#c9a227'], ['傷寒雜病論', '東漢末・張仲景', '方書之祖', '#c0392b'], ['溫病條辨', '清・吳鞠通', '溫病集成', '#2f6fb0']];
+    return svgWrap('0 0 360 240', `<defs><marker id="jdA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" fill="var(--mut)"/></marker></defs>
+      <line x1="6" y1="120" x2="352" y2="120" stroke="var(--mut)" stroke-width="3" marker-end="url(#jdA)"/>`
+      + B.map(([n, t, d, c], i) => { const x = 52 + i * 86, up = i % 2 === 0, y = up ? 14 : 140; return `<line x1="${x}" y1="${up ? 99 : 120}" x2="${x}" y2="${up ? 120 : 140}" stroke="${c}" stroke-width="2"/><circle cx="${x}" cy="120" r="7" fill="${c}"/>
+        <rect x="${x - 47}" y="${y}" width="94" height="85" rx="10" fill="${c}" opacity=".15"/><rect x="${x - 47}" y="${y}" width="94" height="85" rx="10" fill="none" stroke="${c}" stroke-width="1.5"/>
+        <text x="${x}" y="${y + 24}" text-anchor="middle" style="font-size:18px">📜</text><text x="${x}" y="${y + 46}" text-anchor="middle" class="s" style="font-weight:700">${n}</text><text x="${x}" y="${y + 62}" text-anchor="middle" class="xs">${t}</text><text x="${x}" y="${y + 77}" text-anchor="middle" class="xs" style="fill:${c};font-weight:700">${d}</text>`; }).join(''), '中醫經典年代圖');
+  },
+  liujing: () => {
+    const L = [['太陽', '脈浮・頭項強痛・惡寒', '麻黃湯・桂枝湯', '#e07a3a'], ['陽明', '大熱・大汗・大渴・脈洪大', '白虎湯・承氣湯', '#d9534f'], ['少陽', '口苦・咽乾・往來寒熱', '小柴胡湯', '#c9a227'], ['太陰', '腹滿・吐利・食不下', '理中丸', '#5f9a5f'], ['少陰', '脈微細・但欲寐', '四逆湯', '#2f6fb0'], ['厥陰', '寒熱錯雜・消渴', '烏梅丸', '#5a4a8a']];
+    return svgWrap('0 0 360 322', `<defs><marker id="ljA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" fill="var(--mut)"/></marker></defs>
+      <text x="22" y="15" class="xs" style="fill:var(--mut)">外感病傳變：由表入裡、由陽入陰 ↓</text><line x1="9" y1="26" x2="9" y2="314" stroke="var(--mut)" stroke-width="2" marker-end="url(#ljA)"/>`
+      + L.map(([n, d, f, c], i) => { const y = 24 + i * 50; return `${box(20, y, 66, 44, c, n)}<rect x="92" y="${y}" width="264" height="44" rx="10" fill="${c}" opacity=".14"/><text x="102" y="${y + 19}" class="s">${d}</text><text x="102" y="${y + 37}" class="xs" style="fill:var(--mut)">代表方：${f}</text>`; }).join(''), '傷寒六經辨證圖');
+  },
+  weiqi: () => {
+    const R = [['衛分', '發熱微惡寒', 140, '#f3c58a', '#5a3a10'], ['氣分', '壯熱口渴', 108, '#e9a86b', '#fff'], ['營分', '身熱夜甚', 76, '#d9534f', '#fff'], ['血分', '耗血動血', 44, '#8f2a2a', '#fff']];
+    return svgWrap('0 0 300 300', R.map(([n, d, r, c, t]) => `<circle cx="150" cy="150" r="${r}" fill="${c}" stroke="var(--card)" stroke-width="2"/>`).join('')
+      + R.map(([n, d, r, c, t], i) => i < 3 ? `<text x="150" y="${150 - r + 23}" text-anchor="middle" class="s" style="fill:${t};font-weight:700">${n}</text><text x="150" y="${150 + r - 12}" text-anchor="middle" class="xs" style="fill:${t}">${d}</text>` : `<text x="150" y="150" text-anchor="middle" class="s" style="fill:${t};font-weight:700">${n}</text><text x="150" y="168" text-anchor="middle" class="xs" style="fill:${t}">${d}</text>`).join(''), '衛氣營血辨證層次圖');
+  },
+  yangsheng: () => {
+    const S = [['🌱', '春生', '養肝', 180, '#3f9b5b'], ['☀️', '夏長', '養心', 270, '#d9534f'], ['🍂', '秋收', '養肺', 0, '#8a94a6'], ['❄️', '冬藏', '養腎', 90, '#2f6fb0']];
+    const rad = a => a * Math.PI / 180;
+    return svgWrap('0 0 300 300', S.map(([e, n, o, a0, c]) => { const m = rad(a0 + 45), x = (150 + 94 * Math.cos(m)).toFixed(1), y = 150 + 94 * Math.sin(m); return `<path d="${arc(150, 150, 48, 140, rad(a0), rad(a0 + 90))}" fill="${c}" stroke="var(--card)" stroke-width="3"/>
+      <text x="${x}" y="${(y - 12).toFixed(1)}" text-anchor="middle" style="font-size:22px">${e}</text><text x="${x}" y="${(y + 14).toFixed(1)}" text-anchor="middle" class="b" style="fill:#fff">${n}</text><text x="${x}" y="${(y + 32).toFixed(1)}" text-anchor="middle" class="xs" style="fill:#fff">${o}</text>`; }).join('')
+      + `<circle cx="150" cy="150" r="46" fill="var(--card)"/><text x="150" y="146" text-anchor="middle" class="s">春夏養陽</text><text x="150" y="168" text-anchor="middle" class="s">秋冬養陰</text>`, '四季養生圖');
+  }
 };
 
 /* ---------- 圖解課程 ---------- */
@@ -197,13 +306,14 @@ function renderLessons() {
   const done = DB.get().lessons || {};
   const L = LESSONS.find(x => x.id === id);
   if (!L) {
-    app.innerHTML = `<h1>圖解課程</h1><p class="muted">${LESSONS.length} 堂圖文課程，每堂附插圖與小測驗。已完成 ${LESSONS.filter(l => done[l.id]).length}/${LESSONS.length}。</p>
-      <div class="lessons">${LESSONS.map((l, i) => `<a class="lesson" href="#/lessons?${l.id}"><div class="lthumb">${FIG[l.fig]()}</div><div><small class="muted">第 ${i + 1} 課 ${done[l.id] ? '<span class="ok">✔ 已完成</span>' : ''}</small><b>${l.t}</b></div></a>`).join('')}</div>`;
+    const card = l => { const i = LESSONS.indexOf(l); return `<a class="lesson" href="#/lessons?${l.id}"><div class="lthumb">${FIG[l.fig]()}</div><div><small class="muted">第 ${i + 1} 課 ${done[l.id] ? '<span class="ok">✔ 已完成</span>' : ''}</small><b>${l.t}</b></div></a>`; };
+    app.innerHTML = `<h1>圖解課程</h1><p class="muted">參考中醫學系核心課程（中醫基礎理論、中醫診斷學、中藥學、方劑學、針灸學、內經・傷寒・溫病）編排為 ${UNITS.length} 個單元、${LESSONS.length} 堂圖文課，每堂附插圖與小測驗。已完成 ${LESSONS.filter(l => done[l.id]).length}/${LESSONS.length}。</p>
+      ${UNITS.map((u, ui) => { const ls = u.ids.map(id => LESSONS.find(l => l.id === id)); return `<section class="unit"><h2>${u.ic} 第${'一二三四五六七八九十'[ui]}單元　${u.t} <small class="muted">${ls.filter(l => done[l.id]).length}/${ls.length}</small></h2><p class="muted">${u.d}</p><div class="lessons">${ls.map(card).join('')}</div></section>`; }).join('')}`;
     return;
   }
   const n = LESSONS.indexOf(L), prev = LESSONS[n - 1], next = LESSONS[n + 1];
   app.innerHTML = `<p><a class="muted" href="#/lessons">← 全部課程</a></p>
-    <h1><small class="muted">第 ${n + 1} 課</small><br>${L.t}</h1>
+    <h1><small class="muted">${UNITS[unitOf(L.id)].ic} ${UNITS[unitOf(L.id)].t}・第 ${n + 1} 課</small><br>${L.t}</h1>
     <figure class="card figbox">${FIG[L.fig]()}<figcaption class="muted">圖 ${n + 1}　${L.t}</figcaption></figure>
     <p>${L.sum}</p>
     <h2>重點整理</h2><ul class="pts">${L.pts.map(p => `<li>${p}</li>`).join('')}</ul>
@@ -286,7 +396,7 @@ function renderHome() {
     </div>
     <h2>開始學習</h2>
     <div class="grid">
-      ${tile('lessons', '🖼️', '圖解課程', LESSONS.length + ' 堂圖文課程：太極、經絡時辰鐘、三焦…')}
+      ${tile('lessons', '🖼️', '圖解課程', UNITS.length + ' 單元 ' + LESSONS.length + ' 堂：基礎、診斷、中藥、方劑、針灸、經典')}
       ${tile('theory', '☯️', '基礎理論', '陰陽、八綱、四診、五行互動圖')}
       ${tile('herbs', '🌿', '中藥圖鑑', HERBS.length + ' 味常用中藥：性味歸經功效')}
       ${tile('points', '📍', '經絡穴位', POINTS.length + ' 個常用穴位與定位')}
