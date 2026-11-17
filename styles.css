@@ -1,5 +1,5 @@
-:root{--bg:#f6f4ee;--card:#fff;--ink:#1f2a27;--mut:#6b7772;--pri:#1f6f5c;--pri2:#e3f1ec;--line:#e2ded3;--ok:#2e8b57;--no:#c0392b;--sh:0 2px 8px rgba(0,0,0,.06)}
-@media(prefers-color-scheme:dark){:root{--bg:#121816;--card:#1b2420;--ink:#e8efec;--mut:#98a8a1;--pri:#4fb99b;--pri2:#203530;--line:#2b3833;--sh:none}}
+:root{--bg:#f5f3e7;--card:#fffdf5;--ink:#202d19;--mut:#6b725d;--pri:#33502a;--pri2:#e6ead3;--line:#e3e0cb;--onp:#fef7e4;--ok:#2e8b57;--no:#c0392b;--sh:0 2px 8px rgba(0,0,0,.06)}
+@media(prefers-color-scheme:dark){:root{--bg:#141a11;--card:#1d2518;--ink:#eef0e0;--mut:#a2a98f;--pri:#a8bf72;--pri2:#2a3520;--line:#303b28;--onp:#141a11;--sh:none}}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 system-ui,-apple-system,"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;display:flex;min-height:100vh}
 h1{font-size:1.6rem;margin:.2em 0 .6em}h2{font-size:1.15rem;margin:1.6em 0 .6em}h3{margin:.2em 0 .4em}
@@ -15,13 +15,14 @@ main{flex:1;max-width:860px;margin:0 auto;padding:20px 16px 96px;min-width:0}
   body{flex-direction:row}
   .side{position:sticky;top:0;height:100vh;width:220px;flex-direction:column;border-top:0;border-right:1px solid var(--line);padding:20px 12px}
   .side .brand{display:flex;align-items:center;gap:10px;font-size:1.3rem;margin-bottom:20px}
+  .side .brand img{border-radius:22%}
   .side #install:not([hidden]){display:block;margin-top:auto}
   #nav{flex-direction:column;gap:4px}
   #nav a{flex-direction:row;gap:10px;font-size:1rem;padding:10px 14px;border-radius:10px}
   #nav a.on{background:var(--pri2)}
   main{padding-bottom:40px}
 }
-.hero{background:linear-gradient(135deg,var(--pri),#2e9a7e);color:#fff;border-radius:18px;padding:22px 20px;margin-bottom:14px}
+.hero{background:linear-gradient(135deg,#253a1d,#6e7a35);color:#fef7e4;border-radius:18px;padding:22px 20px;margin-bottom:14px}
 .hero h1{margin:0}.hero small{font-size:.6em;opacity:.8;font-weight:400}.hero p{margin:.4em 0 0}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .stat{background:var(--card);border-radius:14px;padding:12px;text-align:center;box-shadow:var(--sh)}
@@ -41,8 +42,8 @@ dl{display:grid;grid-template-columns:4.5em 1fr;gap:4px 10px;margin:.6em 0 0}dt{
 .search{width:100%;padding:11px 14px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink);font-size:1rem}
 .chips{display:flex;gap:8px;overflow-x:auto;padding:10px 0;scrollbar-width:none}.chips::-webkit-scrollbar{display:none}
 .chip{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:99px;padding:5px 14px;white-space:nowrap;cursor:pointer;font:inherit;font-size:.9rem}
-.chip.on{background:var(--pri);color:#fff;border-color:var(--pri)}
-.btn{border:0;background:var(--pri);color:#fff;font:inherit;font-weight:600;padding:11px 22px;border-radius:12px;cursor:pointer}
+.chip.on{background:var(--pri);color:var(--onp);border-color:var(--pri)}
+.btn{border:0;background:var(--pri);color:var(--onp);font:inherit;font-weight:600;padding:11px 22px;border-radius:12px;cursor:pointer}
 .btn.ghost{background:var(--pri2);color:var(--pri)}.btn:disabled{opacity:.5}
 .btn.yin{background:#3b4a63}.btn.yang{background:#d98a1f}
 .row{display:flex;gap:10px;justify-content:center;margin:14px 0;flex-wrap:wrap}.row.between{justify-content:space-between;align-items:center}
@@ -73,7 +74,7 @@ th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:center}th{
 .chk{display:flex;gap:6px;align-items:center;font-size:.9rem}
 .scale{display:flex;gap:8px;margin-top:8px}.scale label{flex:1}.scale input{position:absolute;opacity:0}
 .scale span{display:block;text-align:center;padding:8px 0;border:2px solid var(--line);border-radius:10px;cursor:pointer}
-.scale input:checked+span{background:var(--pri);color:#fff;border-color:var(--pri)}
+.scale input:checked+span{background:var(--pri);color:var(--onp);border-color:var(--pri)}
 .scale input:focus-visible+span{outline:2px solid var(--pri)}
 fieldset{border:0}legend{font-weight:600;padding:0}fieldset.card{margin:10px 0}
 /* 圖像 */
