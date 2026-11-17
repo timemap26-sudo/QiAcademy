@@ -56,12 +56,12 @@ const ZOOM_BASE = {
   foot: ['0 0 270 330', '足背', toes([[88, 70, 22, 30], [124, 62, 14, 22], [152, 70, 13, 20], [176, 82, 12, 18], [196, 98, 11, 15]]) + `
     <path class="zs" d="M100 330C96 280 80 220 70 160C66 130 70 100 80 92L200 108C210 130 208 180 196 230C186 270 176 300 172 330Z"/>
     <path class="zt" d="M102 256L92 104M120 250L124 96"/>
-    ${zl(8, 14, '足背（右足）', 'start')}${zl(88, 30, '拇趾', 'middle')}${zk(62, 136, 93, 140)}${zl(60, 140, '第1蹠骨')}${zk(146, 166, 124, 160)}${zl(148, 170, '第2蹠骨', 'start')}`],
+    ${zl(8, 14, '足背（右足）', 'start')}${zl(88, 34, '拇趾', 'middle')}${zk(62, 136, 93, 140)}${zl(60, 140, '第1蹠骨')}${zk(146, 166, 124, 160)}${zl(148, 170, '第2蹠骨', 'start')}`],
   sole: ['0 0 270 330', '足底', toes([[98, 64, 20, 26], [132, 58, 13, 19], [158, 64, 12, 17], [180, 76, 11, 15], [200, 92, 10, 13]]) + `
     <path class="zs" d="M130 326C96 326 88 300 90 270C92 240 100 220 98 190C96 160 80 140 78 118C76 100 90 90 110 92L196 104C212 108 214 124 206 146C196 176 180 200 172 240C166 280 170 326 130 326Z"/>
     <path class="zt" d="M145 96L130 324"/>
     <g class="zd"><line x1="234" y1="96" x2="234" y2="324"/><line x1="229" y1="96" x2="239" y2="96"/><line x1="229" y1="172" x2="239" y2="172"/><line x1="229" y1="324" x2="239" y2="324"/>${zk(150, 172, 234, 172)}<text x="241" y="138" class="zc">1/3</text><text x="241" y="252" class="zc">2/3</text></g>
-    ${zl(8, 14, '足底（趾除外）', 'start')}${zk(145, 22, 145, 92)}${zl(145, 18, '第2、3趾縫', 'middle')}${zl(130, 300, '足跟', 'middle')}`],
+    ${zl(8, 14, '足底（趾除外）', 'start')}${zk(145, 22, 145, 92)}${zl(162, 18, '第2、3趾縫', 'middle')}${zl(130, 300, '足跟', 'middle')}`],
   head: ['0 0 270 330', '頭頂俯視', `<ellipse class="zs" cx="42" cy="175" rx="8" ry="22"/><ellipse class="zs" cx="228" cy="175" rx="8" ry="22"/>
     <ellipse class="zs" cx="135" cy="170" rx="92" ry="112"/><path class="zs" d="M124 62Q135 38 146 62"/>
     <path class="zt" d="M135 58V282M36 175H234"/>
@@ -143,16 +143,16 @@ const FIG = {
       ${P.map(([a, b, w], i) => { const x = 8 + i * 61; return `${box(x, 54, 52, 44, WX_COL[w], a)}<line x1="${x + 26}" y1="98" x2="${x + 26}" y2="130" stroke="${WX_COL[w]}" stroke-width="3" stroke-dasharray="4 3"/><text x="${x + 26}" y="119" text-anchor="middle" class="xs" style="fill:var(--mut)">${w}</text>${box(x, 130, 52, 44, WX_COL[w], b, '', '#fff')}`; }).join('')}
       <text x="186" y="20" text-anchor="middle" class="s" style="fill:var(--mut)">虛線＝經脈相互絡屬（表裡關係）</text>`, '五臟六腑表裡關係圖');
   },
-  qixue: () => svgWrap('-34 0 408 250', `<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" fill="var(--mut)"/></marker></defs>
-    <line x1="146" y1="78" x2="84" y2="168" stroke="var(--mut)" stroke-width="2" marker-end="url(#ah)"/><line x1="70" y1="160" x2="132" y2="72" stroke="var(--mut)" stroke-width="2" marker-end="url(#ah)"/>
-    <line x1="194" y1="78" x2="256" y2="168" stroke="var(--mut)" stroke-width="2"/><line x1="110" y1="200" x2="230" y2="200" stroke="var(--mut)" stroke-width="2" stroke-dasharray="5 4"/>
-    <circle cx="170" cy="52" r="38" fill="#d98a1f"/><text x="170" y="60" text-anchor="middle" class="b" style="fill:#fff">氣</text>
-    <circle cx="70" cy="200" r="38" fill="#c0392b"/><text x="70" y="208" text-anchor="middle" class="b" style="fill:#fff">血</text>
-    <circle cx="270" cy="200" r="38" fill="#2f6fb0"/><text x="270" y="208" text-anchor="middle" class="b" style="fill:#fff">津液</text>
-    <text x="38" y="102" text-anchor="middle" class="s">氣為血之帥</text><text x="38" y="120" text-anchor="middle" class="xs" style="fill:var(--mut)">生血・行血・攝血</text>
-    <text x="166" y="136" text-anchor="middle" class="s">血為氣之母</text><text x="166" y="153" text-anchor="middle" class="xs" style="fill:var(--mut)">養氣・載氣</text>
-    <text x="304" y="108" text-anchor="middle" class="s">氣能生津</text><text x="304" y="126" text-anchor="middle" class="xs" style="fill:var(--mut)">行津・攝津・津能載氣</text>
-    <text x="170" y="192" text-anchor="middle" class="s">津血同源</text>`, '氣血津液關係圖'),
+  qixue: () => svgWrap('0 0 360 250', `<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" fill="var(--mut)"/></marker></defs>
+    <line x1="156" y1="80" x2="94" y2="168" stroke="var(--mut)" stroke-width="2" marker-end="url(#ah)"/><line x1="80" y1="160" x2="142" y2="72" stroke="var(--mut)" stroke-width="2" marker-end="url(#ah)"/>
+    <line x1="204" y1="80" x2="266" y2="168" stroke="var(--mut)" stroke-width="2"/><line x1="110" y1="204" x2="250" y2="204" stroke="var(--mut)" stroke-width="2" stroke-dasharray="5 4"/>
+    <circle cx="180" cy="50" r="38" fill="#d98a1f"/><text x="180" y="58" text-anchor="middle" class="b" style="fill:#fff">氣</text>
+    <circle cx="70" cy="204" r="38" fill="#c0392b"/><text x="70" y="212" text-anchor="middle" class="b" style="fill:#fff">血</text>
+    <circle cx="290" cy="204" r="38" fill="#2f6fb0"/><text x="290" y="212" text-anchor="middle" class="b" style="fill:#fff">津液</text>
+    <text x="4" y="30" class="s">氣為血之帥</text><text x="4" y="50" class="xs" style="fill:var(--mut)">生血・行血・攝血</text>
+    <text x="180" y="136" text-anchor="middle" class="s">血為氣之母</text><text x="180" y="155" text-anchor="middle" class="xs" style="fill:var(--mut)">養氣・載氣</text>
+    <text x="356" y="30" text-anchor="end" class="s">氣能生津</text><text x="356" y="50" text-anchor="end" class="xs" style="fill:var(--mut)">行津・攝津</text><text x="356" y="68" text-anchor="end" class="xs" style="fill:var(--mut)">津能載氣</text>
+    <text x="180" y="196" text-anchor="middle" class="s">津血同源</text>`, '氣血津液關係圖'),
   liuyin: () => {
     const L = [['🌬️', '風', '善行數變', '#3f9b5b'], ['❄️', '寒', '凝滯收引', '#2f6fb0'], ['☀️', '暑', '炎熱升散', '#d98a1f'], ['💧', '濕', '重濁黏滯', '#8a7a4a'], ['🍂', '燥', '乾澀傷肺', '#a87a3a'], ['🔥', '火', '炎上動血', '#c0392b']];
     return svgWrap('0 0 360 236', L.map(([e, n, d, c], i) => { const x = 6 + (i % 3) * 118, y = 6 + (i / 3 | 0) * 116; return `<rect x="${x}" y="${y}" width="112" height="108" rx="14" fill="${c}" opacity=".14"/><rect x="${x}" y="${y}" width="112" height="108" rx="14" fill="none" stroke="${c}" stroke-width="2"/>
@@ -259,12 +259,12 @@ const FIG = {
     const br = (x1, x2, y, t) => `<path d="M${x1},${y + 6} V${y} H${x2} V${y + 6}" fill="none" stroke="#d9534f" stroke-width="2"/><text x="${(x1 + x2) / 2}" y="${y - 6}" text-anchor="middle" class="s" style="fill:#d9534f">${t}</text>`;
     const vb = (x, y1, y2, t) => `<path d="M${x - 6},${y1} H${x} V${y2} H${x - 6}" fill="none" stroke="#d9534f" stroke-width="2"/><text x="${x + 5}" y="${(y1 + y2) / 2 + 5}" class="s" style="fill:#d9534f">${t}</text>`;
     const G = [['前髮際至後髮際', '12 寸'], ['歧骨至臍中', '8 寸'], ['臍中至恥骨上緣', '5 寸'], ['肘橫紋至腕橫紋', '12 寸'], ['膝中至外踝尖', '16 寸'], ['犢鼻至足三里', '3 寸']];
-    return svgWrap('0 0 360 290', `<rect x="40" y="30" width="30" height="116" rx="14" ${sk}/><line x1="42" y1="70" x2="68" y2="70" ${ln}/><line x1="42" y1="102" x2="68" y2="102" ${ln}/>${vb(80, 70, 102, '1寸')}
+    return svgWrap('0 0 360 318', `<rect x="40" y="30" width="30" height="116" rx="14" ${sk}/><line x1="42" y1="70" x2="68" y2="70" ${ln}/><line x1="42" y1="102" x2="68" y2="102" ${ln}/>${vb(80, 70, 102, '1寸')}
       <rect x="158" y="54" width="36" height="92" rx="16" ${sk}/><line x1="160" y1="88" x2="192" y2="88" ${ln}/>${br(158, 194, 42, '1寸')}
       ${[0, 1, 2, 3].map(i => `<rect x="${250 + i * 24}" y="${i === 1 ? 50 : 56}" width="22" height="${i === 1 ? 96 : 90}" rx="10" ${sk}/>`).join('')}<line x1="250" y1="96" x2="344" y2="96" stroke="#d9534f" stroke-width="1.5" stroke-dasharray="3 3"/>${br(250, 344, 38, '3寸')}
-      <text x="60" y="166" text-anchor="middle" class="xs">中指同身寸</text><text x="176" y="166" text-anchor="middle" class="xs">拇指同身寸</text><text x="297" y="166" text-anchor="middle" class="xs">一夫法（四指併攏）</text>
+      <text x="60" y="166" text-anchor="middle" class="xs">中指同身寸</text><text x="176" y="166" text-anchor="middle" class="xs">拇指同身寸</text><text x="297" y="166" text-anchor="middle" class="xs">一夫法（四指）</text>
       <text x="180" y="192" text-anchor="middle" class="s">常用骨度分寸</text>
-      ${G.map(([a, b], i) => { const x = 4 + (i % 3) * 119, y = 202 + (i / 3 | 0) * 44; return `<rect x="${x}" y="${y}" width="113" height="38" rx="8" fill="var(--pri)" opacity=".13"/><text x="${x + 56}" y="${y + 16}" text-anchor="middle" class="xs">${a}</text><text x="${x + 56}" y="${y + 32}" text-anchor="middle" class="xs" style="font-weight:700">${b}</text>`; }).join('')}`, '取穴量度：同身寸與骨度分寸圖');
+      ${G.map(([a, b], i) => { const x = 4 + (i % 2) * 178, y = 202 + (i / 2 | 0) * 38; return `<rect x="${x}" y="${y}" width="174" height="32" rx="8" fill="var(--pri)" opacity=".13"/><text x="${x + 8}" y="${y + 21}" class="xs">${a}</text><text x="${x + 166}" y="${y + 21}" text-anchor="end" class="xs" style="font-weight:700">${b}</text>`; }).join('')}`, '取穴量度：同身寸與骨度分寸圖');
   },
   wushu: () => {
     const P = [['井', '所出', '如泉源', '少商'], ['滎', '所溜', '如小流', '魚際'], ['輸', '所注', '如灌注', '太淵'], ['經', '所行', '如江河', '經渠'], ['合', '所入', '歸大海', '尺澤']];
@@ -274,12 +274,12 @@ const FIG = {
       <text x="180" y="204" text-anchor="middle" class="xs" style="fill:var(--mut)">例：手太陰肺經的五輸穴</text>`, '五輸穴經氣流注圖');
   },
   jingdian: () => {
-    const B = [['黃帝內經', '戰國–西漢', '理論奠基', '#3f9b5b'], ['神農本草經', '東漢', '本草之祖', '#c9a227'], ['傷寒雜病論', '東漢末・張仲景', '方書之祖', '#c0392b'], ['溫病條辨', '清・吳鞠通', '溫病集成', '#2f6fb0']];
-    return svgWrap('0 0 360 240', `<defs><marker id="jdA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" fill="var(--mut)"/></marker></defs>
+    const B = [['黃帝內經', '戰國–西漢', '理論奠基', '#3f9b5b'], ['神農本草經', '東漢', '本草之祖', '#c9a227'], ['傷寒雜病論', '東漢・張仲景', '方書之祖', '#c0392b'], ['溫病條辨', '清・吳鞠通', '溫病集成', '#2f6fb0']];
+    return svgWrap('0 0 360 238', `<defs><marker id="jdA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" fill="var(--mut)"/></marker></defs>
       <line x1="6" y1="120" x2="352" y2="120" stroke="var(--mut)" stroke-width="3" marker-end="url(#jdA)"/>`
-      + B.map(([n, t, d, c], i) => { const x = 56 + i * 84, up = i % 2 === 0, y = up ? 14 : 140; return `<line x1="${x}" y1="${up ? 99 : 120}" x2="${x}" y2="${up ? 120 : 140}" stroke="${c}" stroke-width="2"/><circle cx="${x}" cy="120" r="7" fill="${c}"/>
-        <rect x="${x - 52}" y="${y}" width="104" height="85" rx="10" fill="${c}" opacity=".15"/><rect x="${x - 52}" y="${y}" width="104" height="85" rx="10" fill="none" stroke="${c}" stroke-width="1.5"/>
-        <text x="${x}" y="${y + 24}" text-anchor="middle" style="font-size:18px">📜</text><text x="${x}" y="${y + 46}" text-anchor="middle" class="s" style="font-weight:700">${n}</text><text x="${x}" y="${y + 62}" text-anchor="middle" class="xs">${t}</text><text x="${x}" y="${y + 77}" text-anchor="middle" class="xs" style="fill:${c};font-weight:700">${d}</text>`; }).join(''), '中醫經典年代圖');
+      + B.map(([n, t, d, c], i) => { const x = 56 + i * 84, up = i % 2 === 0, y = up ? 14 : 140; return `<line x1="${x}" y1="${up ? 106 : 120}" x2="${x}" y2="${up ? 120 : 140}" stroke="${c}" stroke-width="2"/><circle cx="${x}" cy="120" r="7" fill="${c}"/>
+        <rect x="${x - 52}" y="${y}" width="104" height="92" rx="10" fill="${c}" opacity=".15"/><rect x="${x - 52}" y="${y}" width="104" height="92" rx="10" fill="none" stroke="${c}" stroke-width="1.5"/>
+        <text x="${x}" y="${y + 22}" text-anchor="middle" style="font-size:18px">📜</text><text x="${x}" y="${y + 44}" text-anchor="middle" class="s" style="font-weight:700">${n}</text><text x="${x}" y="${y + 63}" text-anchor="middle" class="xs">${t}</text><text x="${x}" y="${y + 82}" text-anchor="middle" class="xs" style="fill:${c};font-weight:700">${d}</text>`; }).join(''), '中醫經典年代圖');
   },
   liujing: () => {
     const L = [['太陽', '脈浮・頭項強痛・惡寒', '麻黃湯・桂枝湯', '#e07a3a'], ['陽明', '大熱・大汗・大渴・脈洪大', '白虎湯・承氣湯', '#d9534f'], ['少陽', '口苦・咽乾・往來寒熱', '小柴胡湯', '#c9a227'], ['太陰', '腹滿・吐利・食不下', '理中丸', '#5f9a5f'], ['少陰', '脈微細・但欲寐', '四逆湯', '#2f6fb0'], ['厥陰', '寒熱錯雜・消渴', '烏梅丸', '#5a4a8a']];
@@ -332,10 +332,10 @@ const MERIDIANS = {
     pts: [['少澤', [58, 266], -10, 8], ['後溪', [59, 254]], ['小海', at(ARM, 7, 1)], ['天宗', [106, 104], 30, 8, 's'], ['聽宮', [108, 40]]] },
   BL: { n: '足太陽膀胱經', v: 'b', p: [[124, 16], [124, 40], [124, 62], [122, 78], [122, 186], [118, 198], ...along(LEG, 0, 0.15, 1.85), at(LEG, -7, 1.98), [96, 398], [90, 401]],
     br: [[[124, 62], [114, 80], [114, 186], at(LEG, -2, 0.4), at(LEG, 0, 1)]],
-    pts: [['天柱', [124, 62], -14, 0], ['肺俞', [122, 92], -14, 4], ['腎俞', [122, 160], -14, 4], ['委中', at(LEG, 0, 1)], ['承山', at(LEG, 0, 1.45)], ['至陰', [90, 401], -6, 8]],
+    pts: [['天柱', [124, 62], -14, 0], ['肺俞', [122, 92], -14, 4], ['腎俞', [122, 160], -14, 4], ['委中', at(LEG, 0, 1)], ['承山', at(LEG, 0, 1.45)], ['至陰', [90, 401], -10, 4]],
     note: '起於目內眥（睛明），上額交巔' },
   KI: { n: '足少陰腎經', v: 'f', p: [[108, 404], [118, 392], ...along(LEG, 9, 1.97, 0.05), [126, 186], [126, 134], [120, 126], [120, 78]],
-    pts: [['湧泉', [108, 404], -22, 10], ['太溪', at(LEG, 9, 1.97)], ['陰谷', at(LEG, 9, 1)], ['俞府', [120, 78], -4, -4]], note: '湧泉位於足底' },
+    pts: [['湧泉', [108, 404], 12, 8], ['太溪', at(LEG, 9, 1.97)], ['陰谷', at(LEG, 9, 1)], ['俞府', [120, 78], -4, -4]], note: '湧泉位於足底' },
   PC: { n: '手厥陰心包經', v: 'f', p: [[104, 100], [93, 94], ...along(ARM, 0, 0.3, 3), [52, 268]],
     pts: [['天池', [104, 100], 10, 4, 's'], ['曲澤', at(ARM, 0, 1)], ['內關', at(ARM, 0, 2.24)], ['勞宮', [52, 256]]] },
   SJ: { n: '手少陽三焦經', v: 'b', p: [[55, 267], [53, 254], ...along(ARM, 0, 3, 0.1), [98, 76], [116, 60], [110, 46], [106, 32]],
@@ -343,7 +343,7 @@ const MERIDIANS = {
   GB: { n: '足少陽膽經', v: 'f', p: [[117, 36], [109, 40], [110, 22], [108, 34], [112, 58], [104, 74], [94, 110], [96, 160], [99, 190], ...along(LEG, -10, 0.05, 2), [96, 400], [95, 405]],
     pts: [['瞳子髎', [117, 36], 26, -8, 's'], ['肩井', [104, 74], -10, -4], ['環跳', [99, 190]], ['陽陵泉', at(LEG, -10, 1.1)], ['懸鐘', at(LEG, -10, 1.8)]], note: '頭側往返迂曲，後經風池下行' },
   LR: { n: '足厥陰肝經', v: 'f', p: [[113, 404], [111, 392], ...along(LEG, 5, 2, 0.05), [118, 190], [104, 168], [96, 150], [108, 116]],
-    pts: [['大敦', [113, 404], -18, 10], ['太衝', [111, 392]], ['曲泉', at(LEG, 5, 1)], ['章門', [96, 150]], ['期門', [108, 116], -16, -6]] },
+    pts: [['大敦', [113, 404], 12, 8], ['太衝', [111, 392]], ['曲泉', at(LEG, 5, 1)], ['章門', [96, 150]], ['期門', [108, 116], -16, -6]] },
   GV: { n: '督脈', v: 'b', mid: 1, p: [[130, 194], [130, 16]], note: '續行過頭頂，止於上齒齦（齦交）',
     pts: [['長強', [130, 194], 10, 4, 's'], ['命門', [130, 160], 10, 4, 's'], ['大椎', [130, 76], 10, 4, 's'], ['風府', [130, 58], 10, 4, 's'], ['百會', [130, 17], 10, 2, 's']] },
   CV: { n: '任脈', v: 'f', mid: 1, p: [[130, 198], [130, 54]], note: '起於胞中，出會陰，上行至唇下',
@@ -363,14 +363,14 @@ function merFig(id) {
     const lead = Math.hypot(dx, dy) > 14 ? `<line x1="${x}" y1="${y}" x2="${lx + (st ? -2 : 2)}" y2="${ly - 4}" stroke="${c}" stroke-width=".8"/>` : '';
     return `${lead}<circle cx="${x}" cy="${y}" r="4.5" fill="${c}" stroke="var(--card)" stroke-width="1.2"/><text x="${lx}" y="${ly}" text-anchor="${st ? 'start' : 'end'}" class="pl">${n}</text>`;
   }).join('');
-  return `<svg class="fig mf" viewBox="-40 -14 340 ${m.note ? 468 : 450}" role="img" aria-label="${m.n}循行圖（${f ? '正面' : '背面'}）">
+  return `<svg class="fig mf" viewBox="-40 -14 340 ${m.note ? 472 : 454}" role="img" aria-label="${m.n}循行圖（${f ? '正面' : '背面'}）">
     <defs><marker id="ar${id}" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0L10,5L0,10z" fill="${c}"/></marker></defs>
     ${bodyBase()}${ears}${head}${paths}
     <circle cx="${s[0]}" cy="${s[1]}" r="7" fill="none" stroke="${c}" stroke-width="2"/>
     ${pts}
     <text x="-34" y="4" class="xs" style="fill:${c};font-weight:700">${m.n}</text><text x="294" y="4" text-anchor="end" class="xs" style="fill:var(--mut)">${f ? '正面' : '背面'}</text>
-    <text x="-34" y="428" class="xs" style="fill:var(--mut)">◯ 起點　▶ 經氣方向${m.mid ? '' : '　淡線：對側'}</text>
-    ${m.note ? `<text x="-34" y="448" class="xs" style="fill:var(--mut)">※ ${m.note}</text>` : ''}</svg>`;
+    <text x="-34" y="432" class="xs" style="fill:var(--mut)">◯ 起點　▶ 經氣方向${m.mid ? '' : '　淡線：對側'}</text>
+    ${m.note ? `<text x="-34" y="452" class="xs" style="fill:var(--mut)">※ ${m.note}</text>` : ''}</svg>`;
 }
 Object.keys(MERIDIANS).forEach(id => { FIG['m' + id] = () => merFig(id); });
 
@@ -621,7 +621,7 @@ function renderFormulas() {
 function renderCards() {
   const all = [
     ...HERBS.map(h => ({ id: 'h_' + h.id, tag: '中藥', icon: HERB_EMOJI[h.id], front: h.name, sub: h.py, col: 1, art: gauge(h.nature) + `<div class="fls">${flavorChips(h.flavor)}</div>`, back: `歸經：${h.mer}\n功效：${h.eff}` })),
-    ...POINTS.map(p => ({ id: 'p_' + p.id, tag: '穴位', front: p.name, sub: p.code, art: POINT_ZOOM[p.id] ? zoomSvg(p.id) : POINT_POS[p.id] ? bodySvg(POINT_POS[p.id].v, { only: p.id, labels: false }) : '', back: `經絡：${p.mer}\n定位：${p.loc}\n主治：${p.use}` }))
+    ...POINTS.map(p => ({ id: 'p_' + p.id, tag: '穴位', front: p.name, sub: p.code, col: POINT_ZOOM[p.id] ? 1 : 0, art: POINT_ZOOM[p.id] ? zoomSvg(p.id) : POINT_POS[p.id] ? bodySvg(POINT_POS[p.id].v, { only: p.id, labels: false }) : '', back: `經絡：${p.mer}\n定位：${p.loc}\n主治：${p.use}` }))
   ];
   let deck = shuffle(all), i = 0, flipped = false, onlyNew = false;
   const known = () => DB.get().known || {};
