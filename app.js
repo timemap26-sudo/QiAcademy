@@ -471,7 +471,6 @@ function renderHome() {
     <h2>開始學習</h2>
     <div class="grid">
       ${tile('lessons', '🖼️', '圖解課程', UNITS.length + ' 單元 ' + LESSONS.length + ' 堂：基礎、診斷、中藥、方劑、針灸、經脈、經典')}
-      ${tile('theory', '☯️', '基礎理論', '陰陽、八綱、四診、五行互動圖')}
       ${tile('herbs', '🌿', '中藥圖鑑', HERBS.length + ' 味常用中藥：性味歸經功效')}
       ${tile('points', '📍', '經絡穴位', POINTS.length + ' 個常用穴位與定位')}
       ${tile('formulas', '⚗️', '經典方劑', FORMULAS.length + ' 首名方與組成')}
