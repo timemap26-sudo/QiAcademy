@@ -13,13 +13,14 @@ const pick = (a, n) => shuffle(a).slice(0, n);
 
 /* ---------- 圖像輔助 ---------- */
 const limb = (pts, w = 16) => `<polyline class="lo" points="${pts}" style="stroke-width:${w + 2}"/><polyline class="lim" points="${pts}" style="stroke-width:${w}"/>`;
-function bodySvg(view, { active = null, only = null, labels = true } = {}) {
-  const body = `<g class="bd">
+const bodyBase = () => `<g class="bd">
     ${limb('92,80 70,150 56,225 52,246')}${limb('168,80 190,150 204,225 208,246')}
     ${limb('114,192 110,290 108,385', 22)}${limb('146,192 150,290 152,385', 22)}
     <ellipse cx="52" cy="256" rx="8" ry="12"/><ellipse cx="208" cy="256" rx="8" ry="12"/>
     <ellipse cx="104" cy="398" rx="15" ry="7"/><ellipse cx="156" cy="398" rx="15" ry="7"/>
     <path d="M92 72Q130 64 168 72L162 192Q130 200 98 192Z"/><rect x="122" y="56" width="16" height="20" rx="4"/><circle cx="130" cy="38" r="22"/></g>`;
+function bodySvg(view, { active = null, only = null, labels = true } = {}) {
+  const body = bodyBase();
   const line = view === 'f'
     ? `<line class="ml" x1="130" y1="76" x2="130" y2="190" style="stroke:${MER_COLOR['任脈']}"/><text class="mt" x="116" y="120" text-anchor="end" style="fill:${MER_COLOR['任脈']}">任脈</text>`
     : `<line class="ml" x1="130" y1="16" x2="130" y2="190" style="stroke:${MER_COLOR['督脈']}"/><text class="mt" x="116" y="120" text-anchor="end" style="fill:${MER_COLOR['督脈']}">督脈</text>`;
@@ -300,6 +301,79 @@ const FIG = {
   }
 };
 
+/* ---------- 十四經脈循行圖 ---------- */
+const ARM = [[92, 80], [70, 150], [56, 225], [52, 246], [52, 266]], LEG = [[114, 192], [110, 290], [108, 385], [106, 400]];
+/* 沿肢體中線取點：t 為節點索引（手臂 1=肘、3=腕；腿 1=膝、2=踝），off 為偏移（正值偏內側、負值偏外側） */
+function at(P, off, t) {
+  const i = Math.min(Math.floor(t), P.length - 2), f = t - i, [x0, y0] = P[i], [x1, y1] = P[i + 1], dx = x1 - x0, dy = y1 - y0, l = Math.hypot(dx, dy);
+  return [+(x0 + dx * f + dy / l * off).toFixed(1), +(y0 + dy * f - dx / l * off).toFixed(1)];
+}
+function along(P, off, t0, t1) {
+  const up = t0 <= t1, [a, b] = up ? [t0, t1] : [t1, t0], ts = [a];
+  for (let k = Math.floor(a) + 1; k < b; k++) ts.push(k);
+  ts.push(b);
+  const r = ts.map(t => at(P, off, t));
+  return up ? r : r.reverse();
+}
+/* v: f=正面 b=背面；p: 主幹（依經氣方向）；br: 分支；pts: [穴名, [x,y], 標籤偏移 dx, dy]；mid: 位於正中線，不左右對稱；note: 圖上補充說明 */
+const MERIDIANS = {
+  LU: { n: '手太陰肺經', v: 'f', p: [[98, 86], [90, 84], ...along(ARM, -5, 0.05, 3), [45, 254], [43, 263]],
+    pts: [['中府', [98, 86], 8, 4], ['尺澤', at(ARM, -5, 1)], ['列缺', at(ARM, -5, 2.43)], ['少商', [43, 263]]] },
+  LI: { n: '手陽明大腸經', v: 'f', p: [[47, 268], [46, 254], ...along(ARM, -8, 3, 0), [94, 72], [118, 64], [120, 52], [130, 50], [136, 45]],
+    pts: [['商陽', [47, 268], -8, 10], ['合谷', [46, 254]], ['曲池', at(ARM, -8, 1)], ['肩髃', [86, 76]], ['迎香', [136, 45], 22, 0, 's']] },
+  ST: { n: '足陽明胃經', v: 'f', p: [[122, 33], [121, 44], [123, 50], [116, 56], [119, 66], [112, 76], [110, 96], [110, 136], [120, 144], [120, 188], ...along(LEG, -4, 0.05, 2), [102, 400], [100, 405]],
+    br: [[[116, 56], [110, 40], [112, 22]]],
+    pts: [['承泣', [122, 33], 30, -2, 's'], ['頭維', [112, 22]], ['天樞', [120, 148], 14, 4, 's'], ['足三里', at(LEG, -4, 1.19)], ['內庭', [100, 405], -6, 8]] },
+  SP: { n: '足太陰脾經', v: 'f', p: [[117, 404], [116, 392], ...along(LEG, 8, 2, 0.05), [112, 186], [112, 124], [102, 112], [102, 88], [98, 112]],
+    pts: [['隱白', [117, 404], -26, 10], ['三陰交', at(LEG, 8, 1.81)], ['陰陵泉', at(LEG, 8, 1.05)], ['血海', at(LEG, 8, 0.82)], ['大包', [98, 112], -8]] },
+  HT: { n: '手少陰心經', v: 'f', p: [[94, 92], ...along(ARM, 6, 0.25, 3), [58, 256], [58, 265]],
+    pts: [['極泉', [94, 92], 12, 18, 's'], ['少海', at(ARM, 6, 1)], ['神門', at(ARM, 6, 3)], ['少衝', [58, 265], -10, 8]] },
+  SI: { n: '手太陽小腸經', v: 'b', p: [[58, 266], [59, 256], ...along(ARM, 7, 3, 0.2), [96, 92], [106, 104], [112, 86], [118, 66], [112, 50], [108, 40]],
+    pts: [['少澤', [58, 266], -10, 8], ['後溪', [59, 254]], ['小海', at(ARM, 7, 1)], ['天宗', [106, 104], 30, 8, 's'], ['聽宮', [108, 40]]] },
+  BL: { n: '足太陽膀胱經', v: 'b', p: [[124, 16], [124, 40], [124, 62], [122, 78], [122, 186], [118, 198], ...along(LEG, 0, 0.15, 1.85), at(LEG, -7, 1.98), [96, 398], [90, 401]],
+    br: [[[124, 62], [114, 80], [114, 186], at(LEG, -2, 0.4), at(LEG, 0, 1)]],
+    pts: [['天柱', [124, 62], -14, 0], ['肺俞', [122, 92], -14, 4], ['腎俞', [122, 160], -14, 4], ['委中', at(LEG, 0, 1)], ['承山', at(LEG, 0, 1.45)], ['至陰', [90, 401], -6, 8]],
+    note: '起於目內眥（睛明），上額交巔' },
+  KI: { n: '足少陰腎經', v: 'f', p: [[108, 404], [118, 392], ...along(LEG, 9, 1.97, 0.05), [126, 186], [126, 134], [120, 126], [120, 78]],
+    pts: [['湧泉', [108, 404], -22, 10], ['太溪', at(LEG, 9, 1.97)], ['陰谷', at(LEG, 9, 1)], ['俞府', [120, 78], -4, -4]], note: '湧泉位於足底' },
+  PC: { n: '手厥陰心包經', v: 'f', p: [[104, 100], [93, 94], ...along(ARM, 0, 0.3, 3), [52, 268]],
+    pts: [['天池', [104, 100], 10, 4, 's'], ['曲澤', at(ARM, 0, 1)], ['內關', at(ARM, 0, 2.24)], ['勞宮', [52, 256]]] },
+  SJ: { n: '手少陽三焦經', v: 'b', p: [[55, 267], [53, 254], ...along(ARM, 0, 3, 0.1), [98, 76], [116, 60], [110, 46], [106, 32]],
+    pts: [['關衝', [55, 267], -10, 8], ['外關', at(ARM, 0, 2.24)], ['肩髎', [90, 78], -6], ['翳風', [110, 46], 30, 6, 's']], note: '繞耳後上行，止於眉梢（絲竹空）' },
+  GB: { n: '足少陽膽經', v: 'f', p: [[117, 36], [109, 40], [110, 22], [108, 34], [112, 58], [104, 74], [94, 110], [96, 160], [99, 190], ...along(LEG, -10, 0.05, 2), [96, 400], [95, 405]],
+    pts: [['瞳子髎', [117, 36], 26, -8, 's'], ['肩井', [104, 74], -10, -4], ['環跳', [99, 190]], ['陽陵泉', at(LEG, -10, 1.1)], ['懸鐘', at(LEG, -10, 1.8)]], note: '頭側往返迂曲，後經風池下行' },
+  LR: { n: '足厥陰肝經', v: 'f', p: [[113, 404], [111, 392], ...along(LEG, 5, 2, 0.05), [118, 190], [104, 168], [96, 150], [108, 116]],
+    pts: [['大敦', [113, 404], -18, 10], ['太衝', [111, 392]], ['曲泉', at(LEG, 5, 1)], ['章門', [96, 150]], ['期門', [108, 116], -16, -6]] },
+  GV: { n: '督脈', v: 'b', mid: 1, p: [[130, 194], [130, 16]], note: '續行過頭頂，止於上齒齦（齦交）',
+    pts: [['長強', [130, 194], 10, 4, 's'], ['命門', [130, 160], 10, 4, 's'], ['大椎', [130, 76], 10, 4, 's'], ['風府', [130, 58], 10, 4, 's'], ['百會', [130, 17], 10, 2, 's']] },
+  CV: { n: '任脈', v: 'f', mid: 1, p: [[130, 198], [130, 54]], note: '起於胞中，出會陰，上行至唇下',
+    pts: [['關元', [130, 172], 10, 4, 's'], ['神闕', [130, 148], 10, 4, 's'], ['中脘', [130, 116], 10, 4, 's'], ['膻中', [130, 98], 10, 4, 's'], ['承漿', [130, 54], 10, 4, 's']] }
+};
+const pl = a => a.map(p => p.join(',')).join(' ');
+const mirror = a => a.map(([x, y]) => [260 - x, y]);
+function merFig(id) {
+  const m = MERIDIANS[id], c = MER_COLOR[m.n], f = m.v === 'f', s = m.p[0], e = m.p[m.p.length - 1];
+  const head = f ? `<g class="hd"><circle cx="122" cy="35" r="2"/><circle cx="138" cy="35" r="2"/><path d="M130 38v7M124 51q6 3 12 0"/></g>` : '';
+  const ears = `<ellipse class="ear" cx="107" cy="40" rx="3" ry="6"/><ellipse class="ear" cx="153" cy="40" rx="3" ry="6"/>`;
+  const line = (a, cls) => `<polyline class="${cls}" points="${pl(a)}" style="stroke:${c}"${cls === 'mp' ? ` marker-end="url(#ar${id})"` : ''}/>`;
+  const all = [m.p, ...(m.br || [])];
+  const paths = all.map((a, i) => line(a, i ? 'mb' : 'mp')).join('') + (m.mid ? '' : all.map(a => line(mirror(a), 'mm')).join(''));
+  const pts = m.pts.map(([n, [x, y], dx = -12, dy = 4, a]) => {
+    const st = a === 's' || (dx > 0 && a !== 'e'), lx = x + dx, ly = y + dy;
+    const lead = Math.hypot(dx, dy) > 14 ? `<line x1="${x}" y1="${y}" x2="${lx + (st ? -2 : 2)}" y2="${ly - 4}" stroke="${c}" stroke-width=".8"/>` : '';
+    return `${lead}<circle cx="${x}" cy="${y}" r="4.5" fill="${c}" stroke="var(--card)" stroke-width="1.2"/><text x="${lx}" y="${ly}" text-anchor="${st ? 'start' : 'end'}" class="pl">${n}</text>`;
+  }).join('');
+  return `<svg class="fig mf" viewBox="-40 -14 340 ${m.note ? 468 : 450}" role="img" aria-label="${m.n}循行圖（${f ? '正面' : '背面'}）">
+    <defs><marker id="ar${id}" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0L10,5L0,10z" fill="${c}"/></marker></defs>
+    ${bodyBase()}${ears}${head}${paths}
+    <circle cx="${s[0]}" cy="${s[1]}" r="7" fill="none" stroke="${c}" stroke-width="2"/>
+    ${pts}
+    <text x="-34" y="4" class="xs" style="fill:${c};font-weight:700">${m.n}</text><text x="294" y="4" text-anchor="end" class="xs" style="fill:var(--mut)">${f ? '正面' : '背面'}</text>
+    <text x="-34" y="428" class="xs" style="fill:var(--mut)">◯ 起點　▶ 經氣方向${m.mid ? '' : '　淡線：對側'}</text>
+    ${m.note ? `<text x="-34" y="448" class="xs" style="fill:var(--mut)">※ ${m.note}</text>` : ''}</svg>`;
+}
+Object.keys(MERIDIANS).forEach(id => { FIG['m' + id] = () => merFig(id); });
+
 /* ---------- 圖解課程 ---------- */
 function renderLessons() {
   const id = location.hash.split('?')[1];
@@ -396,7 +470,7 @@ function renderHome() {
     </div>
     <h2>開始學習</h2>
     <div class="grid">
-      ${tile('lessons', '🖼️', '圖解課程', UNITS.length + ' 單元 ' + LESSONS.length + ' 堂：基礎、診斷、中藥、方劑、針灸、經典')}
+      ${tile('lessons', '🖼️', '圖解課程', UNITS.length + ' 單元 ' + LESSONS.length + ' 堂：基礎、診斷、中藥、方劑、針灸、經脈、經典')}
       ${tile('theory', '☯️', '基礎理論', '陰陽、八綱、四診、五行互動圖')}
       ${tile('herbs', '🌿', '中藥圖鑑', HERBS.length + ' 味常用中藥：性味歸經功效')}
       ${tile('points', '📍', '經絡穴位', POINTS.length + ' 個常用穴位與定位')}
