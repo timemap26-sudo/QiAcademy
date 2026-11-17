@@ -76,3 +76,30 @@ th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:center}th{
 .scale input:checked+span{background:var(--pri);color:#fff;border-color:var(--pri)}
 .scale input:focus-visible+span{outline:2px solid var(--pri)}
 fieldset{border:0}legend{font-weight:600;padding:0}fieldset.card{margin:10px 0}
+/* 圖像 */
+:root{--bf:#efe3d0;--bl:#b9a98f}
+@media(prefers-color-scheme:dark){:root{--bf:#3a4a44;--bl:#566a62}}
+.bodywrap{max-width:320px;margin:6px auto}
+svg.body{width:100%;height:auto;display:block}
+.bd *{fill:var(--bf);stroke:var(--bl);stroke-width:1}
+.bd .lo{fill:none;stroke:var(--bl);stroke-linecap:round;stroke-linejoin:round}
+.bd .lim{fill:none;stroke:var(--bf);stroke-linecap:round;stroke-linejoin:round}
+.ml{stroke-width:1.5;stroke-dasharray:4 3}.mt{font-size:9px}
+.pt{cursor:pointer;outline:none}.pt circle{stroke:#fff;stroke-width:1.5}
+.pt .pl{font-size:11px;fill:var(--ink);font-weight:600}
+.pt.act circle{stroke:var(--ink);stroke-width:2.5;animation:pulse 1.2s infinite}
+@keyframes pulse{50%{transform-box:fill-box;transform-origin:center;transform:scale(1.35)}}
+.legend.wrap{flex-wrap:wrap;gap:6px 14px;margin:8px 0}.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px}
+.emo{font-size:1.4rem}
+.gauge{display:flex;margin:10px 0 6px;border-radius:99px;overflow:hidden;font-size:.78rem;max-width:340px}
+.gauge span{flex:1;text-align:center;color:#fff;padding:3px 0;opacity:.4}.gauge span.on{opacity:1;font-weight:700;flex:1.6;box-shadow:inset 0 0 0 2px rgba(255,255,255,.7)}
+.fls{display:flex;gap:6px;margin:6px 0}.fl{color:#fff;border-radius:8px;padding:1px 10px;font-size:.85rem}
+.tongue{width:100%;max-width:200px;display:block;margin:auto}.tl{font-size:10px;fill:#000;font-weight:700;pointer-events:none}
+.shelf{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px}
+.shelf figure{margin:0;background:var(--card);border-radius:12px;padding:10px;text-align:center;box-shadow:var(--sh)}
+.shelf figcaption small{color:var(--mut)}
+.qsvg{max-width:200px;margin:8px auto}
+.flip{height:340px}
+.bk{display:flex;gap:10px;align-items:center;width:100%}.bk.col{flex-direction:column;align-items:stretch}
+.bk .art{flex:0 0 38%}.bk.col .art{flex:none}.bk .art svg.body{max-height:290px}
+.bk pre{font-size:.88rem}

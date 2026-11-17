@@ -11,6 +11,50 @@ const DB = {
 const shuffle = a => { a = [...a]; for (let i = a.length - 1; i > 0; i--) { const j = Math.random() * (i + 1) | 0; [a[i], a[j]] = [a[j], a[i]]; } return a; };
 const pick = (a, n) => shuffle(a).slice(0, n);
 
+/* ---------- 圖像輔助 ---------- */
+const limb = (pts, w = 16) => `<polyline class="lo" points="${pts}" style="stroke-width:${w + 2}"/><polyline class="lim" points="${pts}" style="stroke-width:${w}"/>`;
+function bodySvg(view, { active = null, only = null, labels = true } = {}) {
+  const body = `<g class="bd">
+    ${limb('92,80 70,150 56,225 52,246')}${limb('168,80 190,150 204,225 208,246')}
+    ${limb('114,192 110,290 108,385', 22)}${limb('146,192 150,290 152,385', 22)}
+    <ellipse cx="52" cy="256" rx="8" ry="12"/><ellipse cx="208" cy="256" rx="8" ry="12"/>
+    <ellipse cx="104" cy="398" rx="15" ry="7"/><ellipse cx="156" cy="398" rx="15" ry="7"/>
+    <path d="M92 72Q130 64 168 72L162 192Q130 200 98 192Z"/><rect x="122" y="56" width="16" height="20" rx="4"/><circle cx="130" cy="38" r="22"/></g>`;
+  const line = view === 'f'
+    ? `<line class="ml" x1="130" y1="76" x2="130" y2="190" style="stroke:${MER_COLOR['任脈']}"/><text class="mt" x="116" y="120" text-anchor="end" style="fill:${MER_COLOR['任脈']}">任脈</text>`
+    : `<line class="ml" x1="130" y1="16" x2="130" y2="190" style="stroke:${MER_COLOR['督脈']}"/><text class="mt" x="116" y="120" text-anchor="end" style="fill:${MER_COLOR['督脈']}">督脈</text>`;
+  const pts = Object.entries(POINT_POS).filter(([id, p]) => p.v === view && (!only || id === only)).map(([id, p]) => {
+    const pt = POINTS.find(x => x.id === id), c = MER_COLOR[pt.mer], act = id === active || !!only;
+    const xs = p.x2 ? [p.x, p.x2] : [p.x];
+    const r = only ? 8 : 6;
+    return `<g class="pt ${act ? 'act' : ''}" data-id="${id}" tabindex="0" role="button" aria-label="${pt.name}">
+      ${labels ? xs.map(x => `<line x1="${x}" y1="${p.y}" x2="${p.lx + (p.a === 's' ? -2 : 2)}" y2="${p.ly - 3}" stroke="${c}" stroke-width=".8"/>`).join('') : ''}
+      ${xs.map(x => `<circle cx="${x}" cy="${p.y}" r="${r}" fill="${c}"/>`).join('')}
+      ${labels ? `<text x="${p.lx}" y="${p.ly}" text-anchor="${p.a === 's' ? 'start' : 'end'}" class="pl">${pt.name}</text>` : ''}</g>`;
+  }).join('');
+  return `<svg viewBox="0 0 260 420" class="body" role="img" aria-label="人體${view === 'f' ? '正面' : '背面'}穴位圖">${body}${line}${pts}</svg>`;
+}
+function gauge(n) {
+  const k = n.replace('微', ''), L = ['寒', '涼', '平', '溫', '熱'], cols = ['#3b86c6', '#7fb7dd', '#aab5b0', '#e9a86b', '#d9533f'];
+  return `<div class="gauge" title="四氣：寒涼平溫熱">${L.map((l, i) => `<span style="background:${cols[i]}" class="${l === k ? 'on' : ''}">${l === k ? n : l}</span>`).join('')}</div>`;
+}
+const flavorChips = f => f.split('、').map(x => `<span class="fl" style="background:${FLAVOR_COL[x] || '#999'}">${x}</span>`).join('');
+const TPATH = 'M22 22Q60 2 98 22Q114 92 60 136Q6 92 22 22Z';
+function tongueSvg(color, coat, sel = -1, regions = false) {
+  const R = [[0, 98, 120, 44], [34, 38, 52, 60], [0, 38, 34, 60, 1], [0, 0, 120, 38]]; // 舌尖/舌中/舌邊(左右)/舌根
+  const cols = ['#ffd166', '#06d6a0', '#118ab2', '#ef476f'];
+  let ov = '';
+  if (regions) {
+    const rs = [{ i: 0, r: [0, 98, 120, 44] }, { i: 1, r: [34, 38, 52, 60] }, { i: 2, r: [0, 38, 34, 60] }, { i: 2, r: [86, 38, 34, 60] }, { i: 3, r: [0, 0, 120, 38] }];
+    ov = `<g clip-path="url(#tc)">${rs.map(({ i, r }) => `<rect data-r="${i}" x="${r[0]}" y="${r[1]}" width="${r[2]}" height="${r[3]}" fill="${cols[i]}" fill-opacity="${i === sel ? .75 : .3}" stroke="#fff" stroke-width="1.5" style="cursor:pointer"/>`).join('')}</g>
+      <text x="60" y="120" text-anchor="middle" class="tl">舌尖</text><text x="60" y="72" text-anchor="middle" class="tl">舌中</text><text x="14" y="72" class="tl" text-anchor="middle">邊</text><text x="106" y="72" class="tl" text-anchor="middle">邊</text><text x="60" y="26" text-anchor="middle" class="tl">舌根</text>`;
+  }
+  return `<svg viewBox="0 0 120 140" class="tongue"><defs><clipPath id="tc"><path d="${TPATH}"/></clipPath></defs>
+    <path d="${TPATH}" fill="${color}" stroke="rgba(0,0,0,.25)"/>
+    ${coat ? `<ellipse cx="60" cy="66" rx="24" ry="38" fill="${coat}" fill-opacity=".85"/>` : ''}
+    <line x1="60" y1="20" x2="60" y2="110" stroke="rgba(0,0,0,.12)"/>${ov}</svg>`;
+}
+
 /* ---------- 路由 ---------- */
 const routes = {
   home: renderHome, theory: renderTheory, herbs: renderHerbs, points: renderPoints,
@@ -78,10 +122,21 @@ function renderTheory() {
     <h2>五行對應表</h2>
     <div class="scroll"><table><thead><tr><th>五行</th><th>五臟</th><th>六腑</th><th>五味</th><th>五色</th><th>五季</th><th>情志</th><th>五官</th><th>五體</th></tr></thead>
     <tbody>${ELEMENTS.map(e => `<tr><td><b>${e.k}</b></td><td>${e.organ}</td><td>${e.fu}</td><td>${e.taste}</td><td>${e.color}</td><td>${e.season}</td><td>${e.emo}</td><td>${e.orifice}</td><td>${e.tissue}</td></tr>`).join('')}</tbody></table></div>
+    <h2>舌診圖解</h2>
+    <p class="muted">舌面分區反映臟腑狀態，點選區塊查看。</p>
+    <div class="wx"><div id="tg"></div><div id="tginfo" class="card"></div></div>
+    <h3>常見舌象</h3>
+    <div class="shelf">${TONGUE_TYPES.map(t => `<figure>${tongueSvg(t.c, t.coat)}<figcaption><b>${t.n}</b><br><small>${t.m}</small></figcaption></figure>`).join('')}</div>
     <h2>核心概念</h2>
     ${THEORY.map(t => `<details class="card"><summary>${t.t}</summary><p>${t.b}</p></details>`).join('')}
     <h2>陰陽小遊戲</h2><div id="yy"></div>`;
-  drawWx(0); yinyang();
+  drawWx(0); yinyang(); drawTongue(0);
+}
+function drawTongue(sel) {
+  $('#tg').innerHTML = tongueSvg('#e8868a', '#f3efe8', sel, true);
+  const t = TONGUE[sel];
+  $('#tginfo').innerHTML = `<h3>${t.k}</h3><p>反映：<b>${t.z}</b></p><p class="muted">口訣：尖心肺、中脾胃、邊肝膽、根腎。</p>`;
+  document.querySelectorAll('#tg [data-r]').forEach(r => r.onclick = () => drawTongue(+r.dataset.r));
 }
 function drawWx(sel) {
   const cx = 150, cy = 150, R = 105;
@@ -129,9 +184,9 @@ function yinyang() {
 }
 
 /* ---------- 列表型頁面（中藥 / 穴位 / 方劑） ---------- */
-function listPage(title, items, cats, card, searchKeys) {
+function listPage(title, items, cats, card, searchKeys, pre = '', after = () => {}) {
   let q = '', cat = '全部';
-  app.innerHTML = `<h1>${title}</h1>
+  app.innerHTML = `<h1>${title}</h1>${pre}
     <input id="q" class="search" type="search" placeholder="搜尋…" aria-label="搜尋">
     <div class="chips" id="chips">${['全部', ...cats].map(c => `<button class="chip ${c === '全部' ? 'on' : ''}" data-c="${c}">${c}</button>`).join('')}</div>
     <div id="list"></div>`;
@@ -141,20 +196,41 @@ function listPage(title, items, cats, card, searchKeys) {
   };
   $('#q').oninput = e => { q = e.target.value.trim(); draw(); };
   $('#chips').onclick = e => { const c = e.target.closest('[data-c]'); if (!c) return; cat = c.dataset.c; document.querySelectorAll('.chip').forEach(x => x.classList.toggle('on', x === c)); draw(); };
-  draw();
+  draw(); after();
 }
 function renderHerbs() {
   const natureCls = n => /寒|涼/.test(n) ? 'cold' : /溫|熱/.test(n) ? 'hot' : 'mid';
   listPage('中藥圖鑑', HERBS, [...new Set(HERBS.map(h => h.cat))],
-    h => `<details class="card herb"><summary><b>${h.name}</b> <small>${h.py}</small><span class="tag ${natureCls(h.nature)}">${h.nature}</span><span class="tag">${h.cat}</span></summary>
+    h => `<details class="card herb"><summary><span class="emo">${HERB_EMOJI[h.id] || '🌿'}</span><b>${h.name}</b> <small>${h.py}</small><span class="tag ${natureCls(h.nature)}">${h.nature}</span><span class="tag">${h.cat}</span></summary>
+      ${gauge(h.nature)}<div class="fls">${flavorChips(h.flavor)}</div>
       <dl><dt>性</dt><dd>${h.nature}</dd><dt>味</dt><dd>${h.flavor}</dd><dt>歸經</dt><dd>${h.mer}</dd><dt>功效</dt><dd>${h.eff}</dd><dt>備註</dt><dd>${h.note}</dd></dl></details>`,
     ['name', 'eff', 'cat', 'py', 'mer']);
 }
 function renderPoints() {
+  let view = 'f', active = null;
+  const pre = `<div class="row"><button class="btn" data-v="f">正面</button><button class="btn ghost" data-v="b">背面</button></div>
+    <div id="bodywrap" class="bodywrap"></div><div id="ptinfo" class="card"></div>
+    <div class="legend wrap">${Object.entries(MER_COLOR).map(([m, c]) => `<span><i class="dot" style="background:${c}"></i>${m}</span>`).join('')}</div>
+    <h2>穴位列表</h2>`;
+  const draw = () => {
+    $('#bodywrap').innerHTML = bodySvg(view, { active });
+    document.querySelectorAll('[data-v]').forEach(b => b.classList.toggle('ghost', b.dataset.v !== view));
+    const p = POINTS.find(x => x.id === active);
+    $('#ptinfo').innerHTML = p ? `<h3>${p.name} <small>${p.code}</small> <span class="tag" style="background:${MER_COLOR[p.mer]};color:#fff">${p.mer}</span></h3>
+      <dl><dt>定位</dt><dd>${p.loc}</dd><dt>功效</dt><dd>${p.eff}</dd><dt>主治</dt><dd>${p.use}</dd></dl>` : '<p class="muted">點選人體圖上的圓點，查看穴位資訊。顏色代表所屬經絡。</p>';
+    document.querySelectorAll('#bodywrap .pt').forEach(g => {
+      const go = () => { active = g.dataset.id; draw(); };
+      g.onclick = go; g.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') go(); };
+    });
+  };
   listPage('經絡穴位', POINTS, [...new Set(POINTS.map(p => p.mer))],
-    p => `<details class="card"><summary><b>${p.name}</b> <small>${p.code}</small><span class="tag">${p.mer}</span></summary>
+    p => `<details class="card"><summary><b>${p.name}</b> <small>${p.code}</small><span class="tag" style="background:${MER_COLOR[p.mer]};color:#fff">${p.mer}</span></summary>
       <dl><dt>定位</dt><dd>${p.loc}</dd><dt>功效</dt><dd>${p.eff}</dd><dt>主治</dt><dd>${p.use}</dd>${p.note ? `<dt>備註</dt><dd>${p.note}</dd>` : ''}</dl></details>`,
-    ['name', 'code', 'mer', 'use', 'eff']);
+    ['name', 'code', 'mer', 'use', 'eff'], pre,
+    () => {
+      document.querySelectorAll('[data-v]').forEach(b => b.onclick = () => { view = b.dataset.v; active = null; draw(); });
+      draw();
+    });
 }
 function renderFormulas() {
   listPage('經典方劑', FORMULAS, [...new Set(FORMULAS.map(f => f.cat))],
@@ -167,8 +243,8 @@ function renderFormulas() {
 /* ---------- 閃卡 ---------- */
 function renderCards() {
   const all = [
-    ...HERBS.map(h => ({ id: 'h_' + h.id, tag: '中藥', front: h.name, sub: h.py, back: `性味：${h.nature}、${h.flavor}\n歸經：${h.mer}\n功效：${h.eff}` })),
-    ...POINTS.map(p => ({ id: 'p_' + p.id, tag: '穴位', front: p.name, sub: p.code, back: `經絡：${p.mer}\n定位：${p.loc}\n主治：${p.use}` }))
+    ...HERBS.map(h => ({ id: 'h_' + h.id, tag: '中藥', icon: HERB_EMOJI[h.id], front: h.name, sub: h.py, col: 1, art: gauge(h.nature) + `<div class="fls">${flavorChips(h.flavor)}</div>`, back: `歸經：${h.mer}\n功效：${h.eff}` })),
+    ...POINTS.map(p => ({ id: 'p_' + p.id, tag: '穴位', front: p.name, sub: p.code, art: POINT_POS[p.id] ? bodySvg(POINT_POS[p.id].v, { only: p.id, labels: false }) : '', back: `經絡：${p.mer}\n定位：${p.loc}\n主治：${p.use}` }))
   ];
   let deck = shuffle(all), i = 0, flipped = false, onlyNew = false;
   const known = () => DB.get().known || {};
@@ -181,8 +257,8 @@ function renderCards() {
     app.innerHTML = `<h1>閃卡</h1>
       <div class="row between"><label class="chk"><input type="checkbox" id="on" ${onlyNew ? 'checked' : ''}> 只顯示未掌握</label><span class="muted">${i + 1}/${d.length}　已掌握 ${Object.keys(k).length}/${all.length}</span></div>
       <div class="flip ${flipped ? 'on' : ''}" id="flip" tabindex="0" role="button" aria-label="翻面">
-        <div class="face front"><span class="tag">${c.tag}</span><div class="big">${c.front}</div><small>${c.sub}</small><p class="muted">點擊翻面</p></div>
-        <div class="face back"><pre>${c.back}</pre></div></div>
+        <div class="face front"><span class="tag">${c.tag}</span>${c.icon ? `<div class="big">${c.icon}</div>` : ''}<div class="big">${c.front}</div><small>${c.sub}</small><p class="muted">點擊翻面</p></div>
+        <div class="face back"><div class="bk ${c.col ? 'col' : ''}"><div class="art">${c.art}</div><pre>${c.back}</pre></div></div></div>
       <div class="row"><button class="btn ghost" id="again">還不熟</button><button class="btn" id="got">我記住了</button></div>`;
     const flip = () => { flipped = !flipped; $('#flip').classList.toggle('on', flipped); };
     $('#flip').onclick = flip; $('#flip').onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); flip(); } };
@@ -206,6 +282,15 @@ function makeQuestions() {
   POINTS.forEach(p => {
     Q.push({ q: `「${p.name}（${p.code}）」屬於哪條經絡？`, o: opts(p.mer, [...new Set(POINTS.map(x => x.mer))]), a: p.mer, e: `${p.name}屬${p.mer}。` });
     Q.push({ q: `哪個穴位的定位是：${p.loc}？`, o: opts(p.name, POINTS.map(x => x.name)), a: p.name, e: `${p.name}（${p.code}）：${p.loc}。` });
+  });
+  POINTS.filter(p => POINT_POS[p.id]).forEach(p => {
+    Q.push({ q: '圖中標示的穴位是？', svg: bodySvg(POINT_POS[p.id].v, { only: p.id, labels: false }), o: opts(p.name, POINTS.filter(x => POINT_POS[x.id]).map(x => x.name)), a: p.name, e: `${p.name}（${p.code}）：${p.loc}。` });
+  });
+  TONGUE.forEach(t => {
+    Q.push({ q: `舌診中，「${t.k}」主要反映哪些臟腑？`, o: opts(t.z, TONGUE.map(x => x.z)), a: t.z, e: '口訣：尖心肺、中脾胃、邊肝膽、根腎。' });
+  });
+  TONGUE_TYPES.forEach(t => {
+    Q.push({ q: `舌象「${t.n}」常提示？`, o: opts(t.m, TONGUE_TYPES.map(x => x.m)), a: t.m, e: `${t.n}：${t.m}。` });
   });
   FORMULAS.forEach(f => {
     Q.push({ q: `「${f.name}」的主要功用是？`, o: opts(f.eff, FORMULAS.map(x => x.eff)), a: f.eff, e: `${f.name}：${f.eff}；組成：${f.herbs.join('、')}。` });
@@ -244,7 +329,7 @@ function renderQuiz() {
     const q = qs[i];
     app.innerHTML = `<h1>隨堂測驗</h1><div class="bar"><i style="width:${i / qs.length * 100}%"></i></div>
       <p class="muted">第 ${i + 1} / ${qs.length} 題　目前 ${score} 分</p>
-      <div class="card"><p class="q">${q.q}</p><div class="opts">${q.o.map((o, n) => `<button class="opt" data-n="${n}">${o}</button>`).join('')}</div>
+      <div class="card"><p class="q">${q.q}</p>${q.svg ? `<div class="qsvg">${q.svg}</div>` : ''}<div class="opts">${q.o.map((o, n) => `<button class="opt" data-n="${n}">${o}</button>`).join('')}</div>
       <div id="fb"></div></div>`;
     app.querySelectorAll('.opt').forEach(b => b.onclick = () => {
       const ok = q.o[b.dataset.n] === q.a;
