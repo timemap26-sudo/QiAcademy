@@ -87,8 +87,8 @@ svg.body{width:100%;height:auto;display:block}
 .ml{stroke-width:1.5;stroke-dasharray:4 3}.mt{font-size:9px}
 .pt{cursor:pointer;outline:none}.pt circle{stroke:#fff;stroke-width:1.5}
 .pt .pl{font-size:11px;fill:var(--ink);font-weight:600}
-.pt.act circle{stroke:var(--ink);stroke-width:2.5;animation:pulse 1.2s infinite}
-@keyframes pulse{50%{transform-box:fill-box;transform-origin:center;transform:scale(1.35)}}
+.pt.act circle{stroke:var(--ink);stroke-width:2.5;transform-box:fill-box;transform-origin:center;animation:pulse 1.2s infinite}
+@keyframes pulse{50%{transform:scale(1.35)}}
 .legend.wrap{flex-wrap:wrap;gap:6px 14px;margin:8px 0}.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px}
 .emo{font-size:1.4rem}
 .gauge{display:flex;margin:10px 0 6px;border-radius:99px;overflow:hidden;font-size:.78rem;max-width:340px}
@@ -103,3 +103,8 @@ svg.body{width:100%;height:auto;display:block}
 .bk{display:flex;gap:10px;align-items:center;width:100%}.bk.col{flex-direction:column;align-items:stretch}
 .bk .art{flex:0 0 38%}.bk.col .art{flex:none}.bk .art svg.body{max-height:290px}
 .bk pre{font-size:.88rem}
+.zoom .zs{fill:var(--bf);stroke:var(--bl);stroke-width:1.2}
+.zoom .zf{fill:none;stroke:var(--bl);stroke-width:1.4;stroke-linecap:round}
+.zoom .zt{fill:none;stroke:var(--bl);stroke-width:1;stroke-dasharray:3 3;opacity:.8}
+.zoom .zl{font-size:10px;fill:var(--mut)}.zoom .zk{stroke:var(--mut);stroke-width:.8}
+.zoom .zd line{stroke:var(--ink);stroke-width:1}.zoom .zd .zk{stroke-dasharray:2 2}.zoom .zc{font-size:11px;fill:var(--ink);font-weight:700}
