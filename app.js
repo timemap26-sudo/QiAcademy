@@ -104,13 +104,138 @@ function tongueSvg(color, coat, sel = -1, regions = false) {
     <line x1="60" y1="20" x2="60" y2="110" stroke="rgba(0,0,0,.12)"/>${ov}</svg>`;
 }
 
+/* ---------- 圖解課程插圖（SVG） ---------- */
+const svgWrap = (vb, body, label) => `<svg class="fig" viewBox="${vb}" role="img" aria-label="${label}">${body}</svg>`;
+const box = (x, y, w, h, fill, txt, sub = '', tc = '#fff') => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="10" fill="${fill}"/>
+  <text x="${x + w / 2}" y="${y + h / 2 + (sub ? -2 : 6)}" text-anchor="middle" class="b" style="fill:${tc}">${txt}</text>${sub ? `<text x="${x + w / 2}" y="${y + h / 2 + 16}" text-anchor="middle" class="s" style="fill:${tc}">${sub}</text>` : ''}`;
+const arc = (cx, cy, r1, r2, a0, a1) => {
+  const P = (r, a) => [cx + r * Math.cos(a), cy + r * Math.sin(a)].map(v => v.toFixed(1)).join(',');
+  return `M${P(r2, a0)} A${r2},${r2} 0 0 1 ${P(r2, a1)} L${P(r1, a1)} A${r1},${r1} 0 0 0 ${P(r1, a0)}Z`;
+};
+const curShichen = () => Math.floor(((new Date().getHours() + 1) % 24) / 2);
+const FIG = {
+  taiji: () => svgWrap('0 0 360 240', `
+    <circle cx="180" cy="120" r="101" fill="#2b2b2b"/><circle cx="180" cy="120" r="100" fill="#f7f1e1"/>
+    <path d="M180,20 A100,100 0 0 1 180,220 A50,50 0 0 1 180,120 A50,50 0 0 0 180,20Z" fill="#2b2b2b"/>
+    <circle cx="180" cy="70" r="13" fill="#2b2b2b"/><circle cx="180" cy="170" r="13" fill="#f7f1e1"/>
+    <text x="128" y="128" text-anchor="middle" class="b" style="fill:#2b2b2b">陽</text><text x="232" y="128" text-anchor="middle" class="b" style="fill:#f7f1e1">陰</text>
+    <text x="38" y="40" text-anchor="middle" class="b" style="fill:#d98a1f">陽</text>
+    ${['動', '熱', '上', '外', '明', '功能'].map((t, i) => `<text x="38" y="${70 + i * 27}" text-anchor="middle">${t}</text>`).join('')}
+    <text x="322" y="40" text-anchor="middle" class="b" style="fill:#3b4a63">陰</text>
+    ${['靜', '寒', '下', '內', '暗', '物質'].map((t, i) => `<text x="322" y="${70 + i * 27}" text-anchor="middle">${t}</text>`).join('')}`, '陰陽太極圖'),
+  clock: () => {
+    const now = curShichen(), A = i => (-90 + (i - .5) * 30) * Math.PI / 180;
+    const seg = SHICHEN.map(([z, h, o, w], i) => {
+      const m = (-90 + i * 30) * Math.PI / 180, on = i === now;
+      const T = (r, t, c, dy) => `<text x="${(150 + r * Math.cos(m)).toFixed(1)}" y="${(150 + r * Math.sin(m) + dy).toFixed(1)}" text-anchor="middle" class="${c}" style="fill:#fff">${t}</text>`;
+      return `<path d="${arc(150, 150, 66, 138, A(i), A(i + 1))}" fill="${WX_COL[w]}" opacity="${on ? 1 : .55}" stroke="${on ? 'var(--ink)' : 'var(--card)'}" stroke-width="${on ? 3 : 2}"/>
+        ${T(103, z, 'b', -2)}${T(103, o, 's', 17)}`;
+    }).join('');
+    const [z, h, o] = SHICHEN[now];
+    return svgWrap('0 0 300 300', `${seg}<circle cx="150" cy="150" r="62" fill="var(--card)"/>
+      <text x="150" y="128" text-anchor="middle" class="s">現在是</text><text x="150" y="156" text-anchor="middle" class="b">${z}時</text>
+      <text x="150" y="180" text-anchor="middle" class="s">${o}經當令</text><text x="150" y="198" text-anchor="middle" class="xs" style="fill:var(--mut)">${h}:00–${(h + 2) % 24}:00</text>`, '十二時辰經絡時辰鐘');
+  },
+  zangfu: () => {
+    const P = [['肝', '膽', '木'], ['心', '小腸', '火'], ['脾', '胃', '土'], ['肺', '大腸', '金'], ['腎', '膀胱', '水'], ['心包', '三焦', '火']];
+    return svgWrap('0 0 372 210', `<text x="6" y="44" class="s">五臟（裡・陰）</text><text x="6" y="196" class="s">六腑（表・陽）</text>
+      ${P.map(([a, b, w], i) => { const x = 8 + i * 61; return `${box(x, 54, 52, 44, WX_COL[w], a)}<line x1="${x + 26}" y1="98" x2="${x + 26}" y2="130" stroke="${WX_COL[w]}" stroke-width="3" stroke-dasharray="4 3"/><text x="${x + 26}" y="119" text-anchor="middle" class="xs" style="fill:var(--mut)">${w}</text>${box(x, 130, 52, 44, WX_COL[w], b, '', '#fff')}`; }).join('')}
+      <text x="186" y="20" text-anchor="middle" class="s" style="fill:var(--mut)">虛線＝經脈相互絡屬（表裡關係）</text>`, '五臟六腑表裡關係圖');
+  },
+  qixue: () => svgWrap('0 0 340 250', `<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" fill="var(--mut)"/></marker></defs>
+    <line x1="146" y1="78" x2="84" y2="168" stroke="var(--mut)" stroke-width="2" marker-end="url(#ah)"/><line x1="70" y1="160" x2="132" y2="72" stroke="var(--mut)" stroke-width="2" marker-end="url(#ah)"/>
+    <line x1="194" y1="78" x2="256" y2="168" stroke="var(--mut)" stroke-width="2"/><line x1="110" y1="200" x2="230" y2="200" stroke="var(--mut)" stroke-width="2" stroke-dasharray="5 4"/>
+    <circle cx="170" cy="52" r="38" fill="#d98a1f"/><text x="170" y="60" text-anchor="middle" class="b" style="fill:#fff">氣</text>
+    <circle cx="70" cy="200" r="38" fill="#c0392b"/><text x="70" y="208" text-anchor="middle" class="b" style="fill:#fff">血</text>
+    <circle cx="270" cy="200" r="38" fill="#2f6fb0"/><text x="270" y="208" text-anchor="middle" class="b" style="fill:#fff">津液</text>
+    <text x="54" y="104" text-anchor="middle" class="s">氣為血之帥</text><text x="54" y="122" text-anchor="middle" class="xs" style="fill:var(--mut)">生血・行血・攝血</text>
+    <text x="150" y="134" text-anchor="middle" class="s">血為氣之母</text><text x="150" y="150" text-anchor="middle" class="xs" style="fill:var(--mut)">養氣・載氣</text>
+    <text x="286" y="110" text-anchor="middle" class="s">氣能生津</text><text x="286" y="128" text-anchor="middle" class="xs" style="fill:var(--mut)">行津・攝津・津能載氣</text>
+    <text x="170" y="192" text-anchor="middle" class="s">津血同源</text>`, '氣血津液關係圖'),
+  liuyin: () => {
+    const L = [['🌬️', '風', '善行數變', '#3f9b5b'], ['❄️', '寒', '凝滯收引', '#2f6fb0'], ['☀️', '暑', '炎熱升散', '#d98a1f'], ['💧', '濕', '重濁黏滯', '#8a7a4a'], ['🍂', '燥', '乾澀傷肺', '#a87a3a'], ['🔥', '火', '炎上動血', '#c0392b']];
+    return svgWrap('0 0 360 236', L.map(([e, n, d, c], i) => { const x = 6 + (i % 3) * 118, y = 6 + (i / 3 | 0) * 116; return `<rect x="${x}" y="${y}" width="112" height="108" rx="14" fill="${c}" opacity=".14"/><rect x="${x}" y="${y}" width="112" height="108" rx="14" fill="none" stroke="${c}" stroke-width="2"/>
+      <text x="${x + 56}" y="${y + 38}" text-anchor="middle" style="font-size:28px">${e}</text><text x="${x + 56}" y="${y + 70}" text-anchor="middle" class="b" style="fill:${c}">${n}邪</text><text x="${x + 56}" y="${y + 94}" text-anchor="middle" class="xs">${d}</text>`; }).join(''), '六淫外邪圖');
+  },
+  sizhen: () => {
+    const Q = [['👁️', '望', '神・色・形・態・舌', '#3f9b5b'], ['👂', '聞', '聽聲音・嗅氣味', '#2f6fb0'], ['💬', '問', '十問歌', '#d98a1f'], ['✋', '切', '脈診・按診', '#c0392b']];
+    return svgWrap('0 0 340 260', `${Q.map(([e, n, d, c], i) => { const x = 6 + (i % 2) * 168, y = 6 + (i / 2 | 0) * 128; return `<rect x="${x}" y="${y}" width="160" height="120" rx="16" fill="${c}" opacity=".14"/>
+      <text x="${x + 80}" y="${y + 42}" text-anchor="middle" style="font-size:28px">${e}</text><text x="${x + 80}" y="${y + 76}" text-anchor="middle" class="b" style="fill:${c}">${n}診</text><text x="${x + 80}" y="${y + 100}" text-anchor="middle" class="xs">${d}</text>`; }).join('')}
+      <circle cx="170" cy="130" r="34" fill="var(--pri)"/><text x="170" y="126" text-anchor="middle" class="s" style="fill:var(--onp)">四診</text><text x="170" y="146" text-anchor="middle" class="s" style="fill:var(--onp)">合參</text>`, '四診合參圖');
+  },
+  bagang: () => {
+    const R = [['表', '裡', '病位深淺'], ['熱', '寒', '疾病性質'], ['實', '虛', '邪正盛衰']];
+    return svgWrap('0 0 340 250', `${box(6, 6, 150, 40, '#d98a1f', '陽證')}${box(184, 6, 150, 40, '#3b4a63', '陰證')}
+      ${R.map(([a, b, d], i) => { const y = 66 + i * 62; return `${box(6, y, 92, 46, '#d98a1f', a, '', '#fff')}${box(242, y, 92, 46, '#3b4a63', b, '', '#fff')}
+        <line x1="104" y1="${y + 23}" x2="236" y2="${y + 23}" stroke="var(--mut)" stroke-width="2"/><rect x="122" y="${y + 9}" width="96" height="28" rx="14" fill="var(--card)" stroke="var(--line)"/><text x="170" y="${y + 29}" text-anchor="middle" class="xs">${d}</text>`; }).join('')}`, '八綱辨證圖');
+  },
+  jingluo: () => {
+    const G = [['經脈', '#2f6fb0', ['十二經脈', '奇經八脈', '十二經別']], ['絡脈', '#3f9b5b', ['十五絡脈', '浮絡', '孫絡']], ['連屬部分', '#d98a1f', ['十二經筋', '十二皮部']]];
+    let y = 0, out = box(4, 112, 74, 50, 'var(--pri)', '經絡', '系統', 'var(--onp)');
+    G.forEach(([n, c, kids]) => {
+      const top = y, mid = top + kids.length * 31 / 2 + 2;
+      out += `<path d="M78,137 C100,137 100,${mid} 120,${mid}" fill="none" stroke="${c}" stroke-width="2"/>${box(120, mid - 18, 84, 36, c, n)}`;
+      kids.forEach((k, j) => { const ky = top + j * 31 + 4; out += `<path d="M204,${mid} C220,${mid} 220,${ky + 13} 236,${ky + 13}" fill="none" stroke="${c}" stroke-width="1.5"/><rect x="236" y="${ky}" width="112" height="26" rx="8" fill="${c}" opacity=".16"/><text x="292" y="${ky + 19}" text-anchor="middle" class="s">${k}</text>`; });
+      y += kids.length * 31 + 14;
+    });
+    return svgWrap(`0 0 352 ${y}`, out, '經絡系統組成圖');
+  },
+  sanjiao: () => svgWrap('0 0 330 300', `<defs><clipPath id="tor"><path d="M120,70 Q80,72 74,110 L70,280 Q70,292 82,292 L218,292 Q230,292 230,280 L226,110 Q220,72 180,70Z"/></clipPath></defs>
+    <circle cx="150" cy="34" r="26" fill="var(--bf)" stroke="var(--bl)"/><rect x="138" y="56" width="24" height="18" fill="var(--bf)"/>
+    <g clip-path="url(#tor)"><rect x="60" y="60" width="180" height="78" fill="#6a9fd8"/><rect x="60" y="138" width="180" height="70" fill="#d9a43a"/><rect x="60" y="208" width="180" height="90" fill="#5a8f6a"/></g>
+    <path d="M120,70 Q80,72 74,110 L70,280 Q70,292 82,292 L218,292 Q230,292 230,280 L226,110 Q220,72 180,70Z" fill="none" stroke="var(--bl)" stroke-width="2"/>
+    <text x="150" y="100" text-anchor="middle" class="b" style="fill:#fff">上焦</text><text x="150" y="122" text-anchor="middle" class="xs" style="fill:#fff">心・肺</text>
+    <text x="150" y="172" text-anchor="middle" class="b" style="fill:#fff">中焦</text><text x="150" y="194" text-anchor="middle" class="xs" style="fill:#fff">脾・胃</text>
+    <text x="150" y="244" text-anchor="middle" class="b" style="fill:#fff">下焦</text><text x="150" y="266" text-anchor="middle" class="xs" style="fill:#fff">肝・腎・腸・膀胱</text>
+    <text x="236" y="104" class="s">☁️ 如霧</text><text x="236" y="178" class="s">🫕 如漚</text><text x="236" y="252" class="s">🌊 如瀆</text>
+    <text x="4" y="142" class="xs" style="fill:var(--mut)">膈 —</text><text x="4" y="212" class="xs" style="fill:var(--mut)">臍 —</text>`, '三焦分部圖')
+};
+
+/* ---------- 圖解課程 ---------- */
+function renderLessons() {
+  const id = location.hash.split('?')[1];
+  const done = DB.get().lessons || {};
+  const L = LESSONS.find(x => x.id === id);
+  if (!L) {
+    app.innerHTML = `<h1>圖解課程</h1><p class="muted">${LESSONS.length} 堂圖文課程，每堂附插圖與小測驗。已完成 ${LESSONS.filter(l => done[l.id]).length}/${LESSONS.length}。</p>
+      <div class="lessons">${LESSONS.map((l, i) => `<a class="lesson" href="#/lessons?${l.id}"><div class="lthumb">${FIG[l.fig]()}</div><div><small class="muted">第 ${i + 1} 課 ${done[l.id] ? '<span class="ok">✔ 已完成</span>' : ''}</small><b>${l.t}</b></div></a>`).join('')}</div>`;
+    return;
+  }
+  const n = LESSONS.indexOf(L), prev = LESSONS[n - 1], next = LESSONS[n + 1];
+  app.innerHTML = `<p><a class="muted" href="#/lessons">← 全部課程</a></p>
+    <h1><small class="muted">第 ${n + 1} 課</small><br>${L.t}</h1>
+    <figure class="card figbox">${FIG[L.fig]()}<figcaption class="muted">圖 ${n + 1}　${L.t}</figcaption></figure>
+    <p>${L.sum}</p>
+    <h2>重點整理</h2><ul class="pts">${L.pts.map(p => `<li>${p}</li>`).join('')}</ul>
+    <h2>隨堂小測</h2><div id="lq"></div>
+    <div class="row between">${prev ? `<a class="btn ghost" href="#/lessons?${prev.id}">← ${prev.t}</a>` : '<span></span>'}${next ? `<a class="btn" href="#/lessons?${next.id}">${next.t} →</a>` : `<a class="btn" href="#/lessons">回到課程列表</a>`}</div>`;
+  let k = 0, right = 0;
+  const ask = () => {
+    if (k >= L.quiz.length) {
+      if (right === L.quiz.length) DB.patch(x => { (x.lessons = x.lessons || {})[L.id] = 1; });
+      $('#lq').innerHTML = `<div class="card"><p>答對 <b>${right}/${L.quiz.length}</b> ${right === L.quiz.length ? '🎉 本課完成！' : '— 再試一次就能完成本課。'}</p><button class="btn ghost" id="lr">重新作答</button></div>`;
+      $('#lr').onclick = () => { k = 0; right = 0; ask(); }; return;
+    }
+    const [q, a, w] = L.quiz[k], o = shuffle([a, ...w]);
+    $('#lq').innerHTML = `<div class="card"><p class="muted">${k + 1}/${L.quiz.length}</p><p class="q">${q}</p><div class="opts">${o.map(x => `<button class="opt">${x}</button>`).join('')}</div><div id="lfb"></div></div>`;
+    document.querySelectorAll('#lq .opt').forEach(b => b.onclick = () => {
+      const ok = b.textContent === a; if (ok) right++;
+      document.querySelectorAll('#lq .opt').forEach(x => { x.disabled = true; if (x.textContent === a) x.classList.add('ok'); });
+      if (!ok) b.classList.add('no');
+      $('#lfb').innerHTML = `<p class="fb ${ok ? 'ok' : 'no'}">${ok ? '✔ 答對了！' : `✘ 正確答案：${a}`}</p><button class="btn" id="ln">${k + 1 === L.quiz.length ? '看結果' : '下一題'}</button>`;
+      $('#ln').onclick = () => { k++; ask(); };
+    });
+  };
+  ask();
+}
+
 /* ---------- 路由 ---------- */
 const routes = {
   home: renderHome, theory: renderTheory, herbs: renderHerbs, points: renderPoints,
-  formulas: renderFormulas, learn: renderLearn, cards: renderCards, quiz: renderQuiz, body: renderBody
+  formulas: renderFormulas, learn: renderLearn, cards: renderCards, quiz: renderQuiz, body: renderBody, lessons: renderLessons
 };
 const NAV = [['home', '首頁', '🏠'], ['learn', '學習', '📖'], ['cards', '閃卡', '🃏'], ['quiz', '測驗', '✅'], ['body', '體質', '🧘']];
-const NAVGROUP = { theory: 'learn', herbs: 'learn', points: 'learn', formulas: 'learn' };
+const NAVGROUP = { lessons: 'learn', theory: 'learn', herbs: 'learn', points: 'learn', formulas: 'learn' };
 
 function route() {
   const name = (location.hash.replace('#/', '') || 'home').split('?')[0];
@@ -161,6 +286,7 @@ function renderHome() {
     </div>
     <h2>開始學習</h2>
     <div class="grid">
+      ${tile('lessons', '🖼️', '圖解課程', LESSONS.length + ' 堂圖文課程：太極、經絡時辰鐘、三焦…')}
       ${tile('theory', '☯️', '基礎理論', '陰陽、八綱、四診、五行互動圖')}
       ${tile('herbs', '🌿', '中藥圖鑑', HERBS.length + ' 味常用中藥：性味歸經功效')}
       ${tile('points', '📍', '經絡穴位', POINTS.length + ' 個常用穴位與定位')}
@@ -175,6 +301,7 @@ function renderHome() {
 const tile = (r, i, t, s) => `<a class="tile" href="#/${r}"><span class="ti">${i}</span><b>${t}</b><small>${s}</small></a>`;
 function renderLearn() {
   app.innerHTML = `<h1>學習</h1><div class="grid">
+    ${tile('lessons', '🖼️', '圖解課程', '圖文並茂的入門課')}
     ${tile('theory', '☯️', '基礎理論', '陰陽、八綱、四診、五行')}
     ${tile('herbs', '🌿', '中藥圖鑑', '性味歸經功效')}
     ${tile('points', '📍', '經絡穴位', '穴位定位與主治')}
@@ -382,6 +509,7 @@ function makeQuestions() {
     Q.push({ q: `「${e.organ}」在五行中屬？`, o: opts(e.k, k), a: e.k, e: `${e.organ}屬${e.k}，主${e.season}，志為${e.emo}。` });
     Q.push({ q: `五行屬「${e.k}」的情志是？`, o: opts(e.emo, N.map(x => x.emo)), a: e.emo, e: `${e.k}：${e.organ}，情志為${e.emo}。` });
   });
+  LESSONS.forEach(l => l.quiz.forEach(([q, a, w]) => Q.push({ q, o: shuffle([a, ...w]), a, e: `出自圖解課程「${l.t}」。` })));
   return Q;
 }
 function renderQuiz() {

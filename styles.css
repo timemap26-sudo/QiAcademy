@@ -121,3 +121,13 @@ svg.body{width:100%;height:auto;display:block}
 .fsz button:disabled{opacity:.35;cursor:default}
 .fsz span{font-size:.75rem;color:var(--mut);min-width:3.2em;text-align:center}
 @media(min-width:900px){.fsz{bottom:20px;right:20px}}
+/* 圖解課程 */
+svg.fig{width:100%;max-width:420px;height:auto;display:block;margin:0 auto}
+.fig text{fill:var(--ink);font-family:var(--font);font-size:13px}.fig .b{font-size:20px;font-weight:700}.fig .s{font-size:14px}.fig .xs{font-size:11px}
+.figbox{margin:10px 0 14px}.figbox figcaption{text-align:center;margin-top:6px;font-size:.82rem}
+.lessons{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.lesson{background:var(--card);border-radius:16px;padding:12px;box-shadow:var(--sh);display:flex;flex-direction:column;gap:8px;transition:transform .15s}
+.lesson:hover,.lesson:active{transform:translateY(-2px)}.lesson b{display:block}
+.lthumb{height:130px;display:flex;align-items:center;justify-content:center;overflow:hidden}.lthumb svg.fig{max-height:130px;width:auto;max-width:100%}
+.pts{padding-left:1.2em}.pts li{margin:.3em 0}
+a.btn{display:inline-block;text-align:center}
