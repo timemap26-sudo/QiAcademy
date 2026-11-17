@@ -639,7 +639,7 @@ function renderCards() {
     app.innerHTML = `<h1>閃卡</h1>
       <div class="row between"><label class="chk"><input type="checkbox" id="on" ${onlyNew ? 'checked' : ''}> 只顯示未掌握</label><span class="muted">${i + 1}/${d.length}　已掌握 ${Object.keys(k).length}/${all.length}</span></div>
       <div class="flip ${flipped ? 'on' : ''}" id="flip" tabindex="0" role="button" aria-label="翻面">
-        <div class="face front"><span class="tag">${c.tag}</span>${c.icon ? `<div class="big">${c.icon}</div>` : ''}<div class="big">${c.front}</div><small>${c.sub}</small><p class="muted">點擊翻面</p></div>
+        <div class="face front"><span class="tag">${c.tag}</span>${c.icon ? `<div class="big ico">${c.icon}</div>` : ''}<div class="big">${c.front}</div><small>${c.sub}</small><p class="muted">點擊翻面</p></div>
         <div class="face back"><div class="bk ${c.col ? 'col' : ''}"><div class="art">${c.art}</div><pre>${c.back}</pre></div></div></div>
       <div class="row"><button class="btn ghost" id="again">還不熟</button><button class="btn" id="got">我記住了</button></div>`;
     const flip = () => { flipped = !flipped; $('#flip').classList.toggle('on', flipped); };

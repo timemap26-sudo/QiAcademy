@@ -73,8 +73,8 @@ th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:center}th{
 #wxsvg .n{cursor:pointer;outline:none}#wxsvg .n text{fill:#fff;font-size:22px;font-weight:700;pointer-events:none}
 #wxsvg .n.sel circle{stroke:var(--ink);stroke-width:3}
 .legend{display:flex;gap:16px;font-size:.85rem;color:var(--mut)}.l{display:inline-block;width:22px;height:0;border-top:3px solid;vertical-align:middle;margin-right:4px}.l.g{border-color:#3f9b5b}.l.r{border-color:#d9534f;border-top-style:dashed}
-.flip{perspective:900px;height:300px;margin:14px 0;cursor:pointer;position:relative;outline:none}
-.face{position:absolute;inset:0;background:var(--card);border-radius:18px;box-shadow:var(--sh);backface-visibility:hidden;transition:transform .5s;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;text-align:center}
+.flip{perspective:900px;display:grid;min-height:300px;margin:14px 0;cursor:pointer;position:relative;outline:none}
+.face{grid-area:1/1;min-width:0;background:var(--card);border-radius:18px;box-shadow:var(--sh);backface-visibility:hidden;transition:transform .5s;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;text-align:center}
 .face.back{transform:rotateY(180deg);align-items:flex-start;overflow:auto}.face.back pre{font:inherit;white-space:pre-wrap;margin:0}
 .flip.on .front{transform:rotateY(-180deg)}.flip.on .back{transform:rotateY(0)}
 .flip .tag{margin:0}
@@ -107,7 +107,8 @@ svg.body{width:100%;height:auto;display:block}
 .shelf figure{margin:0;background:var(--card);border-radius:12px;padding:10px;text-align:center;box-shadow:var(--sh)}
 .shelf figcaption small{color:var(--mut)}
 .qsvg{max-width:200px;margin:8px auto}
-.flip{height:340px}
+.flip{min-height:340px}
+.face.front .ico{font-size:2.2rem;line-height:1;margin:0}.face.front .muted{margin:.4em 0 0}
 .bk{display:flex;gap:10px;align-items:center;width:100%}.bk.col{flex-direction:column;align-items:stretch}
 .bk .art{flex:0 0 38%}.bk.col .art{flex:none}.bk .art svg.body{max-height:290px}
 .bk pre{font-size:.88rem}
