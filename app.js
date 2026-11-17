@@ -391,8 +391,10 @@ function renderLessons() {
     <figure class="card figbox">${FIG[L.fig]()}<figcaption class="muted">圖 ${n + 1}　${L.t}</figcaption></figure>
     <p>${L.sum}</p>
     <h2>重點整理</h2><ul class="pts">${L.pts.map(p => `<li>${p}</li>`).join('')}</ul>
+    ${LESSON_EXTRA[L.id] ? LESSON_EXTRA[L.id].html() : ''}
     <h2>隨堂小測</h2><div id="lq"></div>
     <div class="row between">${prev ? `<a class="btn ghost" href="#/lessons?${prev.id}">← ${prev.t}</a>` : '<span></span>'}${next ? `<a class="btn" href="#/lessons?${next.id}">${next.t} →</a>` : `<a class="btn" href="#/lessons">回到課程列表</a>`}</div>`;
+  if (LESSON_EXTRA[L.id]?.init) LESSON_EXTRA[L.id].init();
   let k = 0, right = 0;
   const ask = () => {
     if (k >= L.quiz.length) {
@@ -415,11 +417,11 @@ function renderLessons() {
 
 /* ---------- 路由 ---------- */
 const routes = {
-  home: renderHome, theory: renderTheory, herbs: renderHerbs, points: renderPoints,
+  home: renderHome, herbs: renderHerbs, points: renderPoints,
   formulas: renderFormulas, learn: renderLearn, cards: renderCards, quiz: renderQuiz, body: renderBody, lessons: renderLessons, cale: renderCale
 };
 const NAV = [['home', '首頁', '🏠'], ['learn', '學習', '📖'], ['cards', '閃卡', '🃏'], ['quiz', '測驗', '✅'], ['body', '體質', '🧘']];
-const NAVGROUP = { cale: 'quiz', lessons: 'learn', theory: 'learn', herbs: 'learn', points: 'learn', formulas: 'learn' };
+const NAVGROUP = { cale: 'quiz', lessons: 'learn', herbs: 'learn', points: 'learn', formulas: 'learn' };
 
 function route() {
   const name = (location.hash.replace('#/', '') || 'home').split('?')[0];
@@ -471,7 +473,6 @@ function renderHome() {
     <h2>開始學習</h2>
     <div class="grid">
       ${tile('lessons', '🖼️', '圖解課程', UNITS.length + ' 單元 ' + LESSONS.length + ' 堂：基礎、診斷、中藥、方劑、針灸、經脈、經典')}
-      ${tile('theory', '☯️', '基礎理論', '陰陽、八綱、四診、五行互動圖')}
       ${tile('herbs', '🌿', '中藥圖鑑', HERBS.length + ' 味常用中藥：性味歸經功效')}
       ${tile('points', '📍', '經絡穴位', POINTS.length + ' 個常用穴位與定位')}
       ${tile('formulas', '⚗️', '經典方劑', FORMULAS.length + ' 首名方與組成')}
@@ -487,39 +488,33 @@ const tile = (r, i, t, s) => `<a class="tile" href="#/${r}"><span class="ti">${i
 function renderLearn() {
   app.innerHTML = `<h1>學習</h1><div class="grid">
     ${tile('lessons', '🖼️', '圖解課程', '圖文並茂的入門課')}
-    ${tile('theory', '☯️', '基礎理論', '陰陽、八綱、四診、五行')}
     ${tile('herbs', '🌿', '中藥圖鑑', '性味歸經功效')}
     ${tile('points', '📍', '經絡穴位', '穴位定位與主治')}
     ${tile('formulas', '⚗️', '經典方劑', '組成與主治')}</div>`;
 }
 
-/* ---------- 基礎理論 + 五行互動 ---------- */
-function renderTheory() {
-  app.innerHTML = `<h1>基礎理論</h1>
-    <h2>五行互動圖</h2>
+/* ---------- 課程延伸互動：五行互動圖／對應表、常見舌象、陰陽小遊戲 ---------- */
+const LESSON_EXTRA = {
+  yinyang: {
+    html: () => `<h2>陰陽小遊戲</h2><div id="yy"></div>`,
+    init: () => yinyang()
+  },
+  wuxing: {
+    html: () => `<h2>五行互動圖</h2>
     <p class="muted">點選任一行，查看相生、相剋與對應事物。</p>
     <div class="wx"><svg id="wxsvg" viewBox="0 0 300 300" role="img" aria-label="五行相生相剋圖"></svg>
       <div id="wxinfo" class="card"></div></div>
     <div class="legend"><span><i class="l g"></i>相生</span><span><i class="l r"></i>相剋</span></div>
     <h2>五行對應表</h2>
     <div class="scroll"><table><thead><tr><th>五行</th><th>五臟</th><th>六腑</th><th>五味</th><th>五色</th><th>五季</th><th>情志</th><th>五官</th><th>五體</th></tr></thead>
-    <tbody>${ELEMENTS.map(e => `<tr><td><b>${e.k}</b></td><td>${e.organ}</td><td>${e.fu}</td><td>${e.taste}</td><td>${e.color}</td><td>${e.season}</td><td>${e.emo}</td><td>${e.orifice}</td><td>${e.tissue}</td></tr>`).join('')}</tbody></table></div>
-    <h2>舌診圖解</h2>
-    <p class="muted">舌面分區反映臟腑狀態，點選區塊查看。</p>
-    <div class="wx"><div id="tg"></div><div id="tginfo" class="card"></div></div>
-    <h3>常見舌象</h3>
-    <div class="shelf">${TONGUE_TYPES.map(t => `<figure>${tongueSvg(t.c, t.coat)}<figcaption><b>${t.n}</b><br><small>${t.m}</small></figcaption></figure>`).join('')}</div>
-    <h2>核心概念</h2>
-    ${THEORY.map(t => `<details class="card"><summary>${t.t}</summary><p>${t.b}</p></details>`).join('')}
-    <h2>陰陽小遊戲</h2><div id="yy"></div>`;
-  drawWx(0); yinyang(); drawTongue(0);
-}
-function drawTongue(sel) {
-  $('#tg').innerHTML = tongueSvg('#e8868a', '#f3efe8', sel, true);
-  const t = TONGUE[sel];
-  $('#tginfo').innerHTML = `<h3>${t.k}</h3><p>反映：<b>${t.z}</b></p><p class="muted">口訣：尖心肺、中脾胃、邊肝膽、根腎。</p>`;
-  document.querySelectorAll('#tg [data-r]').forEach(r => r.onclick = () => drawTongue(+r.dataset.r));
-}
+    <tbody>${ELEMENTS.map(e => `<tr><td><b>${e.k}</b></td><td>${e.organ}</td><td>${e.fu}</td><td>${e.taste}</td><td>${e.color}</td><td>${e.season}</td><td>${e.emo}</td><td>${e.orifice}</td><td>${e.tissue}</td></tr>`).join('')}</tbody></table></div>`,
+    init: () => drawWx(0)
+  },
+  shezhen: {
+    html: () => `<h2>常見舌象</h2>
+    <div class="shelf">${TONGUE_TYPES.map(t => `<figure>${tongueSvg(t.c, t.coat)}<figcaption><b>${t.n}</b><br><small>${t.m}</small></figcaption></figure>`).join('')}</div>`
+  }
+};
 function drawWx(sel) {
   const cx = 150, cy = 150, R = 105;
   const pos = ELEMENTS.map((_, i) => { const a = -Math.PI / 2 + i * 2 * Math.PI / 5; return [cx + R * Math.cos(a), cy + R * Math.sin(a)]; });
